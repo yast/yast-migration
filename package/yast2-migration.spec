@@ -24,7 +24,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        %{name}-%{version}.tar.bz2
 
 Group:	        System/YaST
-License:        GPL-2.0+
+License:        GPL-2.0
 Url:            http://github.com/yast/yast-migration
 BuildRequires:	yast2-buildtools
 BuildRequires:	yast2
