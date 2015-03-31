@@ -10,7 +10,7 @@
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, contact Novell, Inc.
@@ -23,13 +23,20 @@ require "yast"
 require "installation/proposal_store"
 
 module Migration
+  # Provides access to static metadata for update proposal.
   class ProposalStore < Installation::ProposalStore
     include Yast::Logger
     include Yast::I18n
 
-    PROPOSAL_NAMES = [ "update_proposal" ]
+    PROPOSAL_NAMES = ["update_proposal"]
     PROPOSAL_PROPERTIES = {}
     MODULES_ORDER = PROPOSAL_NAMES
+
+    def initialize(_unused_mode)
+      textdomain "migration"
+
+      super("migration")
+    end
 
     # @return [String] translated headline
     def headline
@@ -42,12 +49,13 @@ module Migration
       PROPOSAL_NAMES
     end
 
-    # returns single list of modules presentation order or list of tabs with list of modules
+    # returns single list of modules presentation order or list of tabs with
+    #    list of modules
     def presentation_order
       MODULES_ORDER
     end
 
-  private
+    private
 
     def global_help
       _(
@@ -64,6 +72,5 @@ module Migration
     def order_without_tabs
       MODULES_ORDER
     end
-
   end
 end
