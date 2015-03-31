@@ -36,6 +36,8 @@ Requires:	yast2
 Requires:	yast2-packager
 Requires:	yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
+Requires:       yast2-installation
+Requires:       yast2-update
 
 BuildArch: noarch
 
