@@ -23,8 +23,8 @@ require "yast"
 Yast.import "Sequencer"
 
 module Migration
-  # Goal of class is to provide main single entry point to start migration
-  # work-flow. It is UI oriented sequence.
+  # The goal of the class is to provide main single entry point to start
+  # migration work-flow. It is UI oriented sequence.
   #
   class MainWorkflow
     include Yast::Logger
@@ -61,7 +61,7 @@ module Migration
     def aliases
       {
         "restore"      => ->() { restore_state },
-        "repositories" => -> { repositories }
+        "repositories" => ->() { repositories }
       }
     end
 
