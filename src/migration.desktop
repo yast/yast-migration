@@ -1,0 +1,19 @@
+[Desktop Entry]
+Type=Application
+Categories=Settings;System;Qt;X-SuSE-YaST;X-SuSE-YaST-System;
+
+X-KDE-ModuleType=Library
+X-SuSE-YaST-Call=bootloader
+
+X-SuSE-YaST-Group=Software
+X-SuSE-YaST-Argument=
+X-SuSE-YaST-RootOnly=true
+X-SuSE-YaST-Geometry=
+X-SuSE-YaST-SortKey=
+
+Icon=yast-sw_single
+Exec=xdg-su -c "/sbin/yast2 migration"
+
+Name=Online Migration
+GenericName=Online Migration
+StartupNotify=true
