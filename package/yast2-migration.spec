@@ -37,6 +37,8 @@ Requires:	yast2-packager
 Requires:	yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
 
+BuildArch: noarch
+
 Summary:	YaST2 - Online migration
 
 %description
