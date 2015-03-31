@@ -37,6 +37,8 @@ Requires:	yast2-packager
 Requires:	yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
 
+BuildArch: noarch
+
 Summary:	YaST2 - Online migration
 
 %description
@@ -55,6 +57,9 @@ rake install DESTDIR="%{buildroot}"
 
 %files
 %defattr(-,root,root)
+%{yast_clientdir}/*.rb
+%{yast_libdir}/migration
+%{yast_desktopdir}/*.desktop
 
 %dir %{yast_docdir}
 %doc %{yast_docdir}/COPYING
