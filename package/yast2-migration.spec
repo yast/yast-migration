@@ -55,6 +55,9 @@ rake install DESTDIR="%{buildroot}"
 
 %files
 %defattr(-,root,root)
+%{yast_clientdir}/*.rb
+%{yast_libdir}/migration
+%{yast_desktopdir}/*.desktop
 
 %dir %{yast_docdir}
 %doc %{yast_docdir}/COPYING
