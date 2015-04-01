@@ -29,13 +29,6 @@ module Migration
   class MainWorkflow
     include Yast::Logger
 
-    # array of migration steps, each step contain client and its args
-    MIGRATION_STEPS = [
-      {
-        client: "repositories",
-        args:   [:sw_single_mode]
-      }
-    ]
     def self.run
       workflow = new
       workflow.run
@@ -51,6 +44,10 @@ module Migration
       "ws_start"     => "repositories", # TODO: store state before run
       "repositories" => {
         abort: "restore",
+        next:  "proposals"
+      },
+      "proposals" => {
+        abort: "restore",
         next:  :next
       },
       "restore"      => {
@@ -61,7 +58,8 @@ module Migration
     def aliases
       {
         "restore"      => ->() { restore_state },
-        "repositories" => ->() { repositories }
+        "repositories" => ->() { repositories },
+        "proposals" => ->() { proposals }
       }
     end
 
@@ -72,6 +70,10 @@ module Migration
 
     def repositories
       Yast::WFM.CallFunction("repositories", [:sw_single_mode])
+    end
+
+    def proposals
+      Yast::WFM.CallFunction("migration_proposals")
     end
   end
 end
