@@ -68,9 +68,5 @@ module Migration
     def properties
       PROPOSAL_PROPERTIES
     end
-
-    def order_without_tabs
-      MODULES_ORDER
-    end
   end
 end
