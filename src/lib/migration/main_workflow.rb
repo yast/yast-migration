@@ -20,6 +20,7 @@
 
 require "yast"
 
+Yast.import "Mode"
 Yast.import "Sequencer"
 
 module Migration
@@ -35,6 +36,7 @@ module Migration
     end
 
     def run
+      Yast::Mode.SetMode("update")
       Yast::Sequencer.Run(aliases, WORKFLOW_SEQUENCE)
     end
 
