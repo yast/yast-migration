@@ -20,6 +20,7 @@
 
 require "yast"
 
+Yast.import "Mode"
 Yast.import "Sequencer"
 
 module Migration
@@ -29,19 +30,13 @@ module Migration
   class MainWorkflow
     include Yast::Logger
 
-    # array of migration steps, each step contain client and its args
-    MIGRATION_STEPS = [
-      {
-        client: "repositories",
-        args:   [:sw_single_mode]
-      }
-    ]
     def self.run
       workflow = new
       workflow.run
     end
 
     def run
+      Yast::Mode.SetMode("update")
       Yast::Sequencer.Run(aliases, WORKFLOW_SEQUENCE)
     end
 
@@ -50,6 +45,10 @@ module Migration
     WORKFLOW_SEQUENCE = {
       "ws_start"     => "repositories", # TODO: store state before run
       "repositories" => {
+        abort: "restore",
+        next:  "proposals"
+      },
+      "proposals"    => {
         abort: "restore",
         next:  :next
       },
@@ -61,7 +60,8 @@ module Migration
     def aliases
       {
         "restore"      => ->() { restore_state },
-        "repositories" => ->() { repositories }
+        "repositories" => ->() { repositories },
+        "proposals"    => ->() { proposals }
       }
     end
 
@@ -72,6 +72,10 @@ module Migration
 
     def repositories
       Yast::WFM.CallFunction("repositories", [:sw_single_mode])
+    end
+
+    def proposals
+      Yast::WFM.CallFunction("migration_proposals")
     end
   end
 end
