@@ -48,7 +48,7 @@ module Migration
         abort: "restore",
         next:  "proposals"
       },
-      "proposals" => {
+      "proposals"    => {
         abort: "restore",
         next:  :next
       },
@@ -61,7 +61,7 @@ module Migration
       {
         "restore"      => ->() { restore_state },
         "repositories" => ->() { repositories },
-        "proposals" => ->() { proposals }
+        "proposals"    => ->() { proposals }
       }
     end
 
