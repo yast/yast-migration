@@ -60,6 +60,9 @@ module Yast
           "To start online migration, press <b>Next</b>.\n" \
           "</p>\n"
         )
+        puts "debug input"
+        puts subject.help_text.inspect
+        puts help_string.inspect
         expect(subject.help_text.start_with?(help_string)).to eq true
       end
     end
