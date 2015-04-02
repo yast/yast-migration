@@ -51,11 +51,13 @@ module Yast
       before do
         # mock getting descriptions as we do not want in build to depend on all
         # yast modules from which we use proposal clients
-        allow(subject).to receive(:descriptions).and_return("update_proposal" => {
-                                                              "id"              => "update",
-                                                              "help"            => "my nice help",
-                                                              "rich_text_title" => "my cool title"
-                                                            })
+        allow(subject).to receive(:descriptions).and_return(
+          "update_proposal" => {
+            "id"              => "update",
+            "help"            => "my nice help",
+            "rich_text_title" => "my cool title"
+          }
+        )
       end
 
       it "returns the right help text" do
