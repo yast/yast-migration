@@ -22,6 +22,7 @@ require "yast"
 
 Yast.import "Mode"
 Yast.import "Sequencer"
+Yast.import "Pkg"
 
 module Migration
   # The goal of the class is to provide main single entry point to start
@@ -71,7 +72,10 @@ module Migration
     end
 
     def repositories
-      Yast::WFM.CallFunction("repositories", [:sw_single_mode])
+      ret = Yast::WFM.CallFunction("repositories")
+      Yast::Pkg.SourceLoad if ret != :abort
+
+      ret
     end
 
     def proposals
