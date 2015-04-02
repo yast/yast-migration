@@ -32,11 +32,14 @@ BuildRequires:  rubygem(rspec)
 BuildRequires:  rubygem(yast-rake)
 BuildRequires:  yast2-packager
 BuildRequires:  yast2-ruby-bindings
+# needed in build for testing
+BuildRequires:  yast2-installation >= 3.1.137
 Requires:	yast2
 Requires:	yast2-packager
 Requires:	yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
-Requires:       yast2-installation
+# need recent enough installation for working proposal runner
+Requires:       yast2-installation >= 3.1.137
 Requires:       yast2-update
 
 BuildArch: noarch
