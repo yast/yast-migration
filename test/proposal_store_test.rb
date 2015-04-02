@@ -29,12 +29,6 @@ module Yast
   describe Migration::ProposalStore do
     subject { Migration::ProposalStore.new(nil) }
 
-    before do
-      # we do not have translations, so use default encoding
-      ENV["LANG"] = "C"
-      ENV["LC_ALL"] = "C"
-    end
-
     describe ".headline" do
       it "returns a headline" do
         expect(subject.headline).to eq(Yast._("Migration proposal"))
@@ -54,15 +48,26 @@ module Yast
     end
 
     describe ".help_text" do
+      before do
+        # mock getting descriptions as we do not want in build to depend on all
+        # yast modules from which we use proposal clients
+        allow(subject).to receive(:descriptions).and_return([
+          {
+            "update_proposal" => {
+              "id"              => "update",
+              "help"            => "my nice help",
+              "rich_text_title" => "my cool title"
+            }
+          }
+        ])
+      end
+
       it "returns the right help text" do
         help_string = Yast._(
           "<p>\n" \
           "To start online migration, press <b>Next</b>.\n" \
           "</p>\n"
         )
-        puts "debug input"
-        puts subject.help_text.inspect
-        puts help_string.inspect
         expect(subject.help_text.start_with?(help_string)).to eq true
       end
     end
