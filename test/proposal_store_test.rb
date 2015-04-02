@@ -29,6 +29,12 @@ module Yast
   describe Migration::ProposalStore do
     subject { Migration::ProposalStore.new(nil) }
 
+    before do
+      # we do not have translations, so use default encoding
+      ENV["LANG"] = "C"
+      ENV["LC_ALL"] = "C"
+    end
+
     describe ".headline" do
       it "returns a headline" do
         expect(subject.headline).to eq(Yast._("Migration proposal"))
