@@ -29,7 +29,9 @@ module Migration
     include Yast::I18n
 
     PROPOSAL_NAMES = ["update_proposal"]
-    PROPOSAL_PROPERTIES = {}
+    PROPOSAL_PROPERTIES = {
+      "enable_skip" => "false"
+    }
     MODULES_ORDER = PROPOSAL_NAMES
 
     def initialize(_unused_mode)
