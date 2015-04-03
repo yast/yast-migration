@@ -44,17 +44,17 @@ module Migration
     private
 
     WORKFLOW_SEQUENCE = {
-      "ws_start"     => "repositories", # TODO: store state before run
-      "repositories" => {
+      "ws_start"       => "repositories", # TODO: store state before run
+      "repositories"   => {
         abort: "restore",
         next:  "proposals"
       },
-      "proposals"    => {
+      "proposals"      => {
         abort: "restore",
         next:  "perform_update"
       },
       "perform_update" => {},
-      "restore"      => {
+      "restore"        => {
         abort: :abort
       }
     }
