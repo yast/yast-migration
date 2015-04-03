@@ -53,7 +53,9 @@ module Migration
         abort: "restore",
         next:  "perform_update"
       },
-      "perform_update" => {},
+      "perform_update" => {
+        next:  :next
+      },
       "restore"        => {
         abort: :abort
       }
@@ -88,6 +90,8 @@ module Migration
       Yast::WFM.CallFunction("inst_prepareprogress")
       Yast::WFM.CallFunction("inst_kickoff")
       Yast::WFM.CallFunction("inst_rpmcopy")
+
+      :next
     end
   end
 end

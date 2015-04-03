@@ -24,9 +24,30 @@ require "migration/main_workflow"
 
 describe Migration::MainWorkflow do
   describe ".run" do
+    def mock_client(name, res)
+      allow(Yast::WFM).to receive(:CallFunction).with(name).and_return(res)
+    end
+
+    before do
+      mock_client("repositories", :next)
+      mock_client("migration_proposals", :next)
+      mock_client("inst_prepareprogress", :next)
+      mock_client("inst_kickoff", :next)
+      mock_client("inst_rpmcopy", :next)
+    end
+
     it "pass workflow sequence to Yast sequencer" do
       expect(Yast::Sequencer).to receive(:Run).and_return(:next)
 
+      ::Migration::MainWorkflow.run
+    end
+
+    it "returns :next if clicking next" do
+      expect(::Migration::MainWorkflow.run).to eq :next
+    end
+
+    it "reload sources if click next on repositories" do
+      expect(Yast::Pkg).to receive(:SourceLoad)
       ::Migration::MainWorkflow.run
     end
   end
