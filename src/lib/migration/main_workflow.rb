@@ -44,25 +44,29 @@ module Migration
     private
 
     WORKFLOW_SEQUENCE = {
-      "ws_start"     => "repositories", # TODO: store state before run
-      "repositories" => {
+      "ws_start"       => "repositories", # TODO: store state before run
+      "repositories"   => {
         abort: "restore",
         next:  "proposals"
       },
-      "proposals"    => {
+      "proposals"      => {
         abort: "restore",
+        next:  "perform_update"
+      },
+      "perform_update" => {
         next:  :next
       },
-      "restore"      => {
+      "restore"        => {
         abort: :abort
       }
     }
 
     def aliases
       {
-        "restore"      => ->() { restore_state },
-        "repositories" => ->() { repositories },
-        "proposals"    => ->() { proposals }
+        "restore"        => ->() { restore_state },
+        "repositories"   => ->() { repositories },
+        "proposals"      => ->() { proposals },
+        "perform_update" => ->() { perform_update }
       }
     end
 
@@ -80,6 +84,14 @@ module Migration
 
     def proposals
       Yast::WFM.CallFunction("migration_proposals")
+    end
+
+    def perform_update
+      Yast::WFM.CallFunction("inst_prepareprogress")
+      Yast::WFM.CallFunction("inst_kickoff")
+      Yast::WFM.CallFunction("inst_rpmcopy")
+
+      :next
     end
   end
 end
