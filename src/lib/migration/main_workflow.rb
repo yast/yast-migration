@@ -51,8 +51,9 @@ module Migration
       },
       "proposals"    => {
         abort: "restore",
-        next:  :next
+        next:  "perform_update"
       },
+      "perform_update" => {},
       "restore"      => {
         abort: :abort
       }
@@ -60,9 +61,10 @@ module Migration
 
     def aliases
       {
-        "restore"      => ->() { restore_state },
-        "repositories" => ->() { repositories },
-        "proposals"    => ->() { proposals }
+        "restore"        => ->() { restore_state },
+        "repositories"   => ->() { repositories },
+        "proposals"      => ->() { proposals },
+        "perform_update" => ->() { perform_update }
       }
     end
 
@@ -80,6 +82,12 @@ module Migration
 
     def proposals
       Yast::WFM.CallFunction("migration_proposals")
+    end
+
+    def perform_update
+      Yast::WFM.CallFunction("inst_prepareprogress")
+      Yast::WFM.CallFunction("inst_kickoff")
+      Yast::WFM.CallFunction("inst_rpmcopy")
     end
   end
 end
