@@ -34,6 +34,10 @@ describe Migration::MainWorkflow do
       mock_client("inst_prepareprogress", :next)
       mock_client("inst_kickoff", :next)
       mock_client("inst_rpmcopy", :next)
+
+      allow(Yast::Update).to receive(:clean_backup)
+      allow(Yast::Update).to receive(:create_backup)
+      allow(Yast::Update).to receive(:restore_backup)
     end
 
     it "pass workflow sequence to Yast sequencer" do
@@ -49,6 +53,16 @@ describe Migration::MainWorkflow do
     it "reload sources if click next on repositories" do
       expect(Yast::Pkg).to receive(:SourceLoad)
       ::Migration::MainWorkflow.run
+    end
+
+    it "restores repositories when clicking on Cancel" do
+      expect(Yast::Update).to receive(:clean_backup)
+      expect(Yast::Update).to receive(:create_backup)
+      expect(Yast::Update).to receive(:restore_backup)
+
+      mock_client("migration_proposals", :abort)
+
+      expect(::Migration::MainWorkflow.run).to eq :abort
     end
   end
 end

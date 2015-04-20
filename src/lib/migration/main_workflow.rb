@@ -21,8 +21,9 @@
 require "yast"
 
 Yast.import "Mode"
-Yast.import "Sequencer"
 Yast.import "Pkg"
+Yast.import "Sequencer"
+Yast.import "Update"
 
 module Migration
   # The goal of the class is to provide main single entry point to start
@@ -44,7 +45,10 @@ module Migration
     private
 
     WORKFLOW_SEQUENCE = {
-      "ws_start"       => "repositories", # TODO: store state before run
+      "ws_start"       => "create_backup",
+      "create_backup"  => {
+        next: "repositories"
+      },
       "repositories"   => {
         abort: "restore",
         next:  "proposals"
@@ -63,16 +67,27 @@ module Migration
 
     def aliases
       {
+        "create_backup"  => ->() { create_backup },
         "restore"        => ->() { restore_state },
-        "repositories"   => ->() { repositories },
+        "perform_update" => ->() { perform_update },
         "proposals"      => ->() { proposals },
-        "perform_update" => ->() { perform_update }
+        "repositories"   => ->() { repositories }
       }
     end
 
+    def create_backup
+      Yast::Update.clean_backup
+      Yast::Update.create_backup( "repos",
+        ["/etc/zypp/repos.d/*", "/etc/zypp/credentials", "/etc/zypp/services.d/*"]
+      )
+
+      :next
+    end
+
     def restore_state
-      # TODO: restore after canceling operation
-      raise "Restoring state is not implemented yet"
+      Yast::Update.restore_backup
+
+      :abort
     end
 
     def repositories
