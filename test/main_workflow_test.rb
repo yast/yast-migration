@@ -21,6 +21,10 @@
 # fake Update class to avoid loading all Update dependencies
 module Yast
   class UpdateClass
+    # we need at least one non-default methods, otherwise ruby-bindings thinks 
+    # it is just namespace
+    def fake_method
+    end
   end
   Update = UpdateClass.new
 end
