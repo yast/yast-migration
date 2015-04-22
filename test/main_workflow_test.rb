@@ -18,14 +18,14 @@
 # current contact information at www.suse.com.
 # ------------------------------------------------------------------------------
 
-require_relative "test_helper"
-
 # fake Update class to avoid loading all Update dependencies
 module Yast
   class UpdateClass
   end
   Update = UpdateClass.new
 end
+
+require_relative "test_helper"
 
 require "migration/main_workflow"
 
