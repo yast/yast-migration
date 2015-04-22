@@ -34,7 +34,6 @@ BuildRequires:  yast2-packager
 BuildRequires:  yast2-ruby-bindings
 # needed in build for testing
 BuildRequires:  yast2-installation >= 3.1.137
-BuildRequires:       yast2-update
 Requires:	yast2
 Requires:	yast2-packager
 Requires:	yast2-pkg-bindings

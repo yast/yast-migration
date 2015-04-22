@@ -20,6 +20,13 @@
 
 require_relative "test_helper"
 
+# fake Update class to avoid loading all Update dependencies
+module Yast
+  class UpdateClass
+  end
+  Update = UpdateClass.new
+end
+
 require "migration/main_workflow"
 
 describe Migration::MainWorkflow do
