@@ -80,9 +80,9 @@ module Migration
       Yast::Update.create_backup(
         "repos",
         [
-          "/etc/zypp/repos.d/*",
-          "/etc/zypp/credentials",
-          "/etc/zypp/services.d/*"
+          "/etc/zypp/repos.d",
+          "/etc/zypp/credentials.d",
+          "/etc/zypp/services.d"
         ]
       )
 
