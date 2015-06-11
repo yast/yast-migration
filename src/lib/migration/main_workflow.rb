@@ -19,6 +19,7 @@
 # ------------------------------------------------------------------------------
 
 require "yast"
+require "yast2/fs_snapshot"
 
 Yast.import "Mode"
 Yast.import "Pkg"
@@ -45,33 +46,37 @@ module Migration
     private
 
     WORKFLOW_SEQUENCE = {
-      "ws_start"       => "create_backup",
-      "create_backup"  => {
+      "ws_start"        => "create_backup",
+      "create_backup"   => {
         next: "repositories"
       },
-      "repositories"   => {
+      "repositories"    => {
         abort: "restore",
         next:  "proposals"
       },
-      "proposals"      => {
+      "proposals"       => {
         abort: "restore",
-        next:  "perform_update"
+        next:  "create_snapshot"
       },
-      "perform_update" => {
+      "create_snapshot" => {
+        next: "perform_update"
+      },
+      "perform_update"  => {
         next:  :next
       },
-      "restore"        => {
+      "restore"         => {
         abort: :abort
       }
     }
 
     def aliases
       {
-        "create_backup"  => ->() { create_backup },
-        "restore"        => ->() { restore_state },
-        "perform_update" => ->() { perform_update },
-        "proposals"      => ->() { proposals },
-        "repositories"   => ->() { repositories }
+        "create_backup"   => ->() { create_backup },
+        "create_snapshot" => ->() { create_snapshot },
+        "restore"         => ->() { restore_state },
+        "perform_update"  => ->() { perform_update },
+        "proposals"       => ->() { proposals },
+        "repositories"    => ->() { repositories }
       }
     end
 
@@ -110,6 +115,12 @@ module Migration
       Yast::WFM.CallFunction("inst_prepareprogress")
       Yast::WFM.CallFunction("inst_kickoff")
       Yast::WFM.CallFunction("inst_rpmcopy")
+
+      :next
+    end
+
+    def create_snapshot
+      Yast2::FsSnapshot.create_single("before update on migration")
 
       :next
     end
