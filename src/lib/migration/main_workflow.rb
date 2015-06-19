@@ -19,12 +19,12 @@
 # ------------------------------------------------------------------------------
 
 require "yast"
-require "yast2/fs_snapshot"
 
 Yast.import "Mode"
 Yast.import "Pkg"
 Yast.import "Sequencer"
 Yast.import "Update"
+Yast.import "Report"
 
 module Migration
   # The goal of the class is to provide main single entry point to start
@@ -32,6 +32,13 @@ module Migration
   #
   class MainWorkflow
     include Yast::Logger
+    include Yast::I18n
+
+    FIND_CONFIG_CMD = "/usr/bin/snapper --no-dbus list-configs | " \
+      "grep \"^root \" >/dev/null"
+    CREATE_SNAPSHOT_CMD = "/usr/bin/snapper create --type=%{snapshot_type} " \
+      "--cleanup-algorithm=number --print-number " \
+      "--description=\"%{description}\""
 
     def self.run
       workflow = new
@@ -39,6 +46,7 @@ module Migration
     end
 
     def run
+      textdomain "migration"
       Yast::Mode.SetMode("update")
       Yast::Sequencer.Run(aliases, WORKFLOW_SEQUENCE)
     end
@@ -120,9 +128,29 @@ module Migration
     end
 
     def create_snapshot
-      Yast2::FsSnapshot.create_single("before update on migration")
-
+      perform_snapshot if snapper_configured?
       :next
+    end
+
+    def snapper_configured?
+      out = Yast::SCR.Execute(Yast::Path.new(".target.bash_output"),
+        FIND_CONFIG_CMD)
+
+      log.info("Checking if Snapper is configured: \"#{FIND_CONFIG_CMD}\" " \
+        "returned: #{out}")
+      out["exit"] == 0
+    end
+
+    def perform_snapshot
+      cmd = format(CREATE_SNAPSHOT_CMD,
+        snapshot_type: :single,
+        description:   "before update on migration")
+
+      out = Yast::SCR.Execute(Yast::Path.new(".target.bash_output"), cmd)
+      return :next if out["exit"] == 0
+
+      log.error "Snapshot could not be created: #{cmd} returned: #{out}"
+      Yast::Report.Error(_("Failed to create filesystem snapshot."))
     end
   end
 end

@@ -47,11 +47,12 @@ describe Migration::MainWorkflow do
       mock_client("inst_kickoff", :next)
       mock_client("inst_rpmcopy", :next)
 
+      cmd_success = { "exit" => 0 }
+      cmd_fail = { "exit" => 1 }
       allow(Yast::Update).to receive(:clean_backup)
       allow(Yast::Update).to receive(:create_backup)
       allow(Yast::Update).to receive(:restore_backup)
-      allow(Yast2::FsSnapshot).to receive(:create_single)
-        .with("before update on migration")
+      allow(Yast::SCR).to receive(:Execute).and_return(cmd_success, cmd_fail)
     end
 
     it "pass workflow sequence to Yast sequencer" do
