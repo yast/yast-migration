@@ -125,11 +125,20 @@ module Migration
     end
 
     def create_snapshot
+      if snapper_configured?
+        perform_snapshot
+      end
+      :next
+    end
+
+    def snapper_configured?
       out = Yast::SCR.Execute(Yast::Path.new(".target.bash_output"), FIND_CONFIG_CMD)
 
       log.info("Checking if Snapper is configured: \"#{FIND_CONFIG_CMD}\" returned: #{out}")
-      return :next unless out["exit"] == 0
+      out["exit"] == 0
+    end
 
+    def perform_snapshot
       cmd = format(CREATE_SNAPSHOT_CMD,
         snapshot_type: :single,
         description:   "before update on migration"
@@ -141,8 +150,6 @@ module Migration
         log.error "Snapshot could not be created: #{cmd} returned: #{out}"
         Yast::Report.Error(_("Failed to create filesystem snapshot."))
       end
-
-      :next
     end
   end
 end
