@@ -50,8 +50,9 @@ describe Migration::MainWorkflow do
       allow(Yast::Update).to receive(:clean_backup)
       allow(Yast::Update).to receive(:create_backup)
       allow(Yast::Update).to receive(:restore_backup)
-      allow(Yast2::FsSnapshot).to receive(:create_single)
-        .with("before update on migration")
+      allow(Yast::SCR).to receive(:Execute).and_return({"exit"=>0})
+#      allow(Yast2::FsSnapshot).to receive(:create_single)
+#        .with("before update on migration")
     end
 
     it "pass workflow sequence to Yast sequencer" do
