@@ -125,9 +125,6 @@ module Migration
     end
 
     def create_snapshot
-#      full-blown version to be used in SP1 and further
-#      Yast2::FsSnapshot.create_single("before update on migration")
-
       out = Yast::SCR.Execute(Yast::Path.new(".target.bash_output"), FIND_CONFIG_CMD)
 
       log.info("Checking if Snapper is configured: \"#{FIND_CONFIG_CMD}\" returned: #{out}")
