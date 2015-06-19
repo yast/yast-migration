@@ -50,7 +50,7 @@ describe Migration::MainWorkflow do
       allow(Yast::Update).to receive(:clean_backup)
       allow(Yast::Update).to receive(:create_backup)
       allow(Yast::Update).to receive(:restore_backup)
-      allow(Yast::SCR).to receive(:Execute).and_return("exit" => 0, "exit" => 1)
+      allow(Yast::SCR).to receive(:Execute).and_return({ "exit" => 0 }, { "exit" => 1 })
     end
 
     it "pass workflow sequence to Yast sequencer" do
