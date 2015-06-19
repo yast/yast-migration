@@ -143,7 +143,6 @@ module Migration
       if out["exit"] != 0
         log.error "Snapshot could not be created: #{cmd} returned: #{out}"
         Yast::Report.Error(_("Failed to create filesystem snapshot."))
-        return :next
       end
 
       :next
