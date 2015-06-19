@@ -4,7 +4,3 @@ inherit_from:
 
 Metrics/LineLength:
   Max: 150
-
-Metrics/MethodLength:
-  Max: 15
-
