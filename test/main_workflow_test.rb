@@ -22,9 +22,10 @@
 module Yast
   # Faked Update module
   class UpdateClass
-    # we need at least one non-default methods, otherwise ruby-bindings thinks
-    # it is just namespace
-    def fake_method
+    def did_init1=(_init)
+    end
+
+    def onlyUpdateInstalled=(_mode)
     end
   end
   Update = UpdateClass.new

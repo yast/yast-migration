@@ -113,6 +113,14 @@ module Migration
     end
 
     def proposals
+      # HACK: disable updating from _all_ repositories in update_proposal.rb
+      # client, pretend that the initialization has been already done
+      Yast::Update.did_init1 = true
+
+      # update only installed packages, updated based on patterns is used for
+      # product version upgrade (e.g. SLES11 -> SLES12)
+      Yast::Update.onlyUpdateInstalled = true
+
       Yast::WFM.CallFunction("migration_proposals", [{ "hide_export" => true }])
     end
 
