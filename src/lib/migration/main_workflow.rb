@@ -116,7 +116,7 @@ module Migration
     end
 
     def proposals
-      Yast::WFM.CallFunction("migration_proposals")
+      Yast::WFM.CallFunction("migration_proposals", [{ "hide_export" => true }])
     end
 
     def perform_update
