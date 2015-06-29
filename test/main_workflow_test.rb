@@ -37,12 +37,12 @@ require "migration/main_workflow"
 describe Migration::MainWorkflow do
   describe ".run" do
     def mock_client(name, res)
-      allow(Yast::WFM).to receive(:CallFunction).with(name).and_return(res)
+      allow(Yast::WFM).to receive(:CallFunction).with(*name).and_return(res)
     end
 
     before do
       mock_client("repositories", :next)
-      mock_client("migration_proposals", :next)
+      mock_client(["migration_proposals", [{ "hide_export" => true }]], :next)
       mock_client("inst_prepareprogress", :next)
       mock_client("inst_kickoff", :next)
       mock_client("inst_rpmcopy", :next)
@@ -75,7 +75,7 @@ describe Migration::MainWorkflow do
       expect(Yast::Update).to receive(:create_backup)
       expect(Yast::Update).to receive(:restore_backup)
 
-      mock_client("migration_proposals", :abort)
+      mock_client(["migration_proposals", [{ "hide_export" => true }]], :abort)
 
       expect(::Migration::MainWorkflow.run).to eq :abort
     end
