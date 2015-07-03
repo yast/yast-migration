@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Thu Jul  2 10:05:23 UTC 2015 - lslezak@suse.cz
+
+- call the registration client to add and configure the migration
+  repositories (FATE#315161)
+- use a specific migration proposal client
+- 3.1.1
+
+-------------------------------------------------------------------
 Wed Mar 25 13:30:18 UTC 2015 - jreidinger@suse.com
 
 - initial package

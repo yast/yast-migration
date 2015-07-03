@@ -37,13 +37,15 @@ module Yast
 
     describe ".proposal_names" do
       it "returns an update proposal" do
-        expect(subject.proposal_names).to eq ["update_proposal"]
+        expect(subject.proposal_names).to eq ["migration_proposal",
+                                              "packages_proposal"]
       end
     end
 
     describe ".presentation_order" do
       it "returns a presentation order" do
-        expect(subject.presentation_order).to eq ["update_proposal"]
+        expect(subject.presentation_order).to eq ["migration_proposal",
+                                                  "packages_proposal"]
       end
     end
 

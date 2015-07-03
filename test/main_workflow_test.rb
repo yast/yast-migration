@@ -41,7 +41,7 @@ describe Migration::MainWorkflow do
     end
 
     before do
-      mock_client("repositories", :next)
+      mock_client("migration_repos", :next)
       mock_client(["migration_proposals", [{ "hide_export" => true }]], :next)
       mock_client("inst_prepareprogress", :next)
       mock_client("inst_kickoff", :next)
@@ -63,11 +63,6 @@ describe Migration::MainWorkflow do
 
     it "returns :next if clicking next" do
       expect(::Migration::MainWorkflow.run).to eq :next
-    end
-
-    it "reload sources if click next on repositories" do
-      expect(Yast::Pkg).to receive(:SourceLoad)
-      ::Migration::MainWorkflow.run
     end
 
     it "restores repositories when clicking on Cancel" do

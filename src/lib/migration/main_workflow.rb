@@ -109,10 +109,7 @@ module Migration
     end
 
     def repositories
-      ret = Yast::WFM.CallFunction("repositories")
-      Yast::Pkg.SourceLoad if ret != :abort
-
-      ret
+      Yast::WFM.CallFunction("migration_repos")
     end
 
     def proposals

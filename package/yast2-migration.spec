@@ -17,7 +17,7 @@
 
 
 Name:           yast2-migration
-Version:        3.1.0
+Version:        3.1.1
 Release:        0
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -38,6 +38,8 @@ Requires:	yast2 >= 3.1.130
 Requires:	yast2-packager
 Requires:	yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
+# new registration with migration support
+Requires:       yast2-registration >= 3.1.135
 # need recent enough installation for working proposal runner
 Requires:       yast2-installation >= 3.1.146
 Requires:       yast2-update
