@@ -21,6 +21,7 @@
 ENV["Y2DIR"] = File.expand_path("../../src", __FILE__)
 
 require "yast"
+require "yaml"
 
 if ENV["COVERAGE"]
   require "simplecov"
@@ -40,4 +41,12 @@ if ENV["COVERAGE"]
       Coveralls::SimpleCov::Formatter
     ]
   end
+end
+
+def data_file(file)
+  File.expand_path(File.join("../data", file), __FILE__)
+end
+
+def load_yaml_data(file)
+  YAML.load_file(data_file(file))
 end

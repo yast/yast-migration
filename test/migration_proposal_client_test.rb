@@ -31,15 +31,25 @@ describe Migration::ProposalClient do
   end
 
   describe "#ask_user" do
-    it "prints a message and returns :abort user input" do
-      expect(Yast::Popup).to receive(:Message)
-      expect(subject.ask_user({})).to include("workflow_sequence" => :abort)
+    it "runs the repository manager returns the user input" do
+      expect(Yast::WFM).to receive(:call).with("repositories", ["refresh-enabled"])
+        .and_return(:next)
+      expect(subject.ask_user({})).to include("workflow_sequence" => :next)
+    end
+
+    it "handles clicking a link from the proposal" do
+      repo_id = 3
+      expect(Yast::Pkg).to receive(:SourceSetEnabled).with(repo_id, false)
+
+      expect(subject.ask_user("chosen_id" => "#{Migration::ProposalClient::LINK_PREFIX}#{repo_id}"))
+        .to include("workflow_sequence" => :next)
     end
   end
 
   describe "#make_proposal" do
     let(:msg) { "Product <b>Foo</b> will be installed" }
-    it "returns a map with proposal details" do
+
+    before do
       expect(Yast::Pkg).to receive(:PkgSolve)
       expect(Yast::Pkg).to receive(:PkgSolveErrors).and_return(0)
       expect(Yast::Update).to receive(:solve_errors=)
@@ -47,12 +57,23 @@ describe Migration::ProposalClient do
       expect(Yast::Packages).to receive(:product_update_summary)
         .and_return([msg])
       expect(Yast::Pkg).to receive(:ResolvableProperties).with("", :product, "")
-        .and_return([])
+        .and_return(load_yaml_data("sles12_migration_products.yml"))
+      expect(Yast::Pkg).to receive(:SourceGeneralData).with(0)
+        .and_return("name" => "Repo")
+    end
 
+    it "returns a map with proposal details" do
       proposal = subject.make_proposal({})
 
       expect(proposal).to include("help", "preformatted_proposal")
       expect(proposal["preformatted_proposal"]).to include(msg)
+    end
+
+    it "returns a warning when an obsoleted repository is present" do
+      proposal = subject.make_proposal({})
+      expect(proposal["warning"]).to include("Repository <b>Repo</b> is obsolete " \
+          "and should be excluded from migration")
+      expect(proposal["warning_level"]).to eq(:warning)
     end
   end
 end
