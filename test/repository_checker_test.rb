@@ -18,35 +18,18 @@
 # current contact information at www.suse.com.
 # ------------------------------------------------------------------------------
 
-ENV["Y2DIR"] = File.expand_path("../../src", __FILE__)
+require_relative "test_helper"
 
-require "yast"
-require "yaml"
+require "migration/repository_checker"
 
-if ENV["COVERAGE"]
-  require "simplecov"
-  SimpleCov.start do
-    add_filter "/test/"
+describe Migration::RepositoryChecker do
+  subject do
+    Migration::RepositoryChecker.new(load_yaml_data("sles12_migration_products.yml"))
   end
 
-  # for coverage we need to load all ruby files
-  src_location = File.expand_path("../../src", __FILE__)
-  Dir["#{src_location}/{module,lib}/**/*.rb"].each { |f| require_relative f }
-
-  # use coveralls for on-line code coverage reporting at Travis CI
-  if ENV["TRAVIS"]
-    require "coveralls"
-    SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-      SimpleCov::Formatter::HTMLFormatter,
-      Coveralls::SimpleCov::Formatter
-    ]
+  describe "#obsolete_product_repos" do
+    it "returns repositories containing obsolete products" do
+      expect(subject.obsolete_product_repos).to eq([0])
+    end
   end
-end
-
-def data_file(file)
-  File.expand_path(File.join("../data", file), __FILE__)
-end
-
-def load_yaml_data(file)
-  YAML.load_file(data_file(file))
 end
