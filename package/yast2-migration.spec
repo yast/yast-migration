@@ -17,7 +17,7 @@
 
 
 Name:           yast2-migration
-Version:        3.1.1
+Version:        3.1.0.1
 Release:        0
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -27,21 +27,18 @@ Group:	        System/YaST
 License:        GPL-2.0
 Url:            http://github.com/yast/yast-migration
 BuildRequires:	yast2-buildtools
-BuildRequires:	yast2 >= 3.1.130
+BuildRequires:	yast2
 BuildRequires:  rubygem(rspec)
 BuildRequires:  rubygem(yast-rake)
 BuildRequires:  yast2-packager
 BuildRequires:  yast2-ruby-bindings
 # needed in build for testing
-BuildRequires:  yast2-installation >= 3.1.137
-Requires:	yast2 >= 3.1.130
+Requires:	yast2
 Requires:	yast2-packager
 Requires:	yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
 # new registration with migration support
-Requires:       yast2-registration >= 3.1.135
-# need recent enough installation for working proposal runner
-Requires:       yast2-installation
+Requires:       yast2-registration >= 3.1.127.1
 Requires:       yast2-update
 
 BuildArch: noarch
@@ -66,6 +63,7 @@ rake install DESTDIR="%{buildroot}"
 %defattr(-,root,root)
 %{yast_clientdir}/*.rb
 %{yast_libdir}/migration
+%{yast_libdir}/installation
 %{yast_desktopdir}/*.desktop
 
 %dir %{yast_docdir}

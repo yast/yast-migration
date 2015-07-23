@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Thu Jul 23 13:47:38 UTC 2015 - jreidinger@suse.com
+
+- backport module to SLE12 GA, that contain including new code
+  needed to run this module and also decrease version to make clear
+  that backported version is lower
+- 3.1.0.1
+
+-------------------------------------------------------------------
 Thu Jul  2 10:05:23 UTC 2015 - lslezak@suse.cz
 
 - call the registration client to add and configure the migration
