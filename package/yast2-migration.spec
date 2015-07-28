@@ -52,7 +52,8 @@ This package contains the YaST2 component for online migration.
 %setup -n %{name}-%{version}
 
 %check
-rake test:unit
+# tests are commented out as SLE-12 have only old rspec and tests uses rspec3
+# rake test:unit
 
 %build
 
