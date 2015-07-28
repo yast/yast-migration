@@ -1,3 +1,31 @@
 # use the shared Yast defaults
 inherit_from:
   /usr/share/YaST2/data/devtools/data/rubocop_yast_style.yml
+
+
+# disable the checks for the files which have been copied from other packages
+# to keep them in sync for easy update
+
+Metrics/LineLength:
+  Exclude:
+    - src/lib/installation/*.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - src/lib/installation/*.rb
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - src/lib/installation/*.rb
+
+Metrics/AbcSize:
+  Exclude:
+    - src/lib/installation/*.rb
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - src/lib/installation/*.rb
+
+Metrics/ClassLength:
+  Exclude:
+    - src/lib/installation/*.rb
