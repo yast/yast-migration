@@ -31,13 +31,13 @@ describe Migration::ProposalClient do
   end
 
   describe "#ask_user" do
-    it "runs the repository manager returns the user input" do
+    it "runs the repository manager and returns the user input" do
       expect(Yast::WFM).to receive(:call).with("repositories", ["refresh-enabled"])
         .and_return(:next)
       expect(subject.ask_user({})).to include("workflow_sequence" => :next)
     end
 
-    it "handles clicking a link from the proposal" do
+    it "disables the respective repository when clicking the 'Disable' link in the proposal" do
       repo_id = 3
       expect(Yast::Pkg).to receive(:SourceSetEnabled).with(repo_id, false)
 
