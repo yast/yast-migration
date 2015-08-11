@@ -98,13 +98,14 @@ module Migration
       repo_warnings = check_repositories(products)
 
       # merge the warnings
+      warning = package_warnings["warning"].to_s + repo_warnings["warning"].to_s
+      return if warning.empty?
+
+      proposal["warning"] = warning
+
       warning_level = package_warnings["warning_level"] ||
         repo_warnings["warning_level"]
       proposal["warning_level"] = warning_level if warning_level
-
-      warning = package_warnings.fetch("warning", "") +
-        repo_warnings.fetch("warning", "")
-      proposal["warning"] = warning if warning
 
       links = repo_warnings["links"]
       proposal["links"] = links if links
