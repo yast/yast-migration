@@ -1,0 +1,134 @@
+---
+- arch: x86_64
+  category: base
+  description: |-
+    SUSE Linux Enterprise offers a comprehensive
+            suite of products built on a single code base.
+            The platform addresses business needs from
+            the smallest thin-client devices to the world's
+            most powerful high-performance computing
+            and mainframe servers. SUSE Linux Enterprise
+            offers common management tools and technology
+            certifications across the platform, and
+            each product is enterprise-class.
+  display_name: SUSE Linux Enterprise Server 12
+  download_size: 0
+  eol: 1730332800
+  flags: []
+  flavor: DVD
+  inst_size: 0
+  locked: false
+  medium_nr: 0
+  name: SLES
+  on_system_by_user: true
+  product_file: "/etc/products.d/SLES.prod"
+  register_release: ''
+  register_target: sle-12-x86_64
+  relnotes_url: https://www.suse.com/releasenotes/x86_64/SUSE-SLES/12/release-notes-sles.rpm
+  relnotes_urls:
+  - https://www.suse.com/releasenotes/x86_64/SUSE-SLES/12/release-notes-sles.rpm
+  short_name: SLES12
+  source: -1
+  status: :removed
+  summary: SUSE Linux Enterprise Server 12
+  transact_by: :solver
+  type: base
+  update_urls: []
+  upgrades: []
+  vendor: SUSE
+  version: 12-0
+  version_epoch: 
+  version_release: '0'
+  version_version: '12'
+- arch: x86_64
+  category: addon
+  description: |-
+    SUSE Linux Enterprise offers a comprehensive
+            suite of products built on a single code base.
+            The platform addresses business needs from
+            the smallest thin-client devices to the world's
+            most powerful high-performance computing
+            and mainframe servers. SUSE Linux Enterprise
+            offers common management tools and technology
+            certifications across the platform, and
+            each product is enterprise-class.
+  display_name: SUSE Linux Enterprise Server 12 SP1 Alpha2
+  download_size: 0
+  eol: 1730332800
+  flags: []
+  flavor: POOL
+  inst_size: 0
+  locked: false
+  medium_nr: 0
+  name: SLES
+  on_system_by_user: false
+  product_file: SLES.prod
+  product_package: sles-release
+  register_release: ''
+  register_target: sle-12-x86_64
+  relnotes_url: https://www.suse.com/releasenotes/x86_64/SUSE-SLES/12/release-notes-sles.rpm
+  relnotes_urls:
+  - https://www.suse.com/releasenotes/x86_64/SUSE-SLES/12/release-notes-sles.rpm
+  short_name: SLES12-SP1
+  source: 3
+  status: :selected
+  summary: SUSE Linux Enterprise Server 12 SP1 Alpha2
+  transact_by: :solver
+  type: addon
+  update_urls: []
+  vendor: SUSE LLC <https://www.suse.com/>
+  version: 12.1-0
+  version_epoch: 
+  version_release: '0'
+  version_version: '12.1'
+- arch: x86_64
+  category: addon
+  description: |-
+    SUSE Linux Enterprise offers a comprehensive
+            suite of products built on a single code base.
+            The platform addresses business needs from
+            the smallest thin-client devices to the world's
+            most powerful high-performance computing
+            and mainframe servers. SUSE Linux Enterprise
+            offers common management tools and technology
+            certifications across the platform, and
+            each product is enterprise-class.
+  display_name: SUSE Linux Enterprise Server 12
+  download_size: 0
+  eol: 1730332800
+  flags: []
+  flavor: DVD
+  inst_size: 0
+  license: "SUSE(R) Linux Enterprise Server 12\n\nSUSE End User License Agreement\n\nPLEASE
+    READ THIS AGREEMENT CAREFULLY.  BY PURCHASING, INSTALLING, DOWNLOADING \nOR OTHERWISE
+    USING THE SOFTWARE (INCLUDING ITS COMPONENTS), YOU AGREE TO THE \nTERMS OF THIS
+    AGREEMENT.  IF YOU DO NOT AGREE WITH THESE TERMS, YOU ARE NOT \nPERMITTED TO DOWNLOAD,
+    INSTALL OR USE THE SOFTWARE AND YOU SHOULD NOTIFY THE \nPARTY FROM WHICH YOU PURCHASED
+    THE SOFTWARE TO OBTAIN A REFUND.   AN \nINDIVIDUAL ACTING ON BEHALF OF AN ENTITY
+    REPRESENTS THAT HE OR SHE HAS THE \nAUTHORITY TO ENTER INTO THIS AGREEMENT ON
+    BEHALF OF THAT ENTITY.\n\nThis End User License Agreement (\"Agreement\") is a
+    legal agreement between ...<shortened>"
+  license_confirmed: false
+  locked: false
+  medium_nr: 0
+  name: SLES
+  on_system_by_user: false
+  product_file: SLES.prod
+  product_package: sles-release
+  register_release: ''
+  register_target: sle-12-x86_64
+  relnotes_url: https://www.suse.com/releasenotes/x86_64/SUSE-SLES/12/release-notes-sles.rpm
+  relnotes_urls:
+  - https://www.suse.com/releasenotes/x86_64/SUSE-SLES/12/release-notes-sles.rpm
+  short_name: SLES12
+  source: 0
+  status: :available
+  summary: SUSE Linux Enterprise Server 12
+  transact_by: :solver
+  type: addon
+  update_urls: []
+  vendor: SUSE LLC <https://www.suse.com/>
+  version: 12-0
+  version_epoch: 
+  version_release: '0'
+  version_version: '12'
