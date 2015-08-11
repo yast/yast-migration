@@ -18,6 +18,7 @@
 # ------------------------------------------------------------------------------
 
 require_relative "test_helper"
+require "migration/proposal_client"
 
 describe Migration::ProposalClient do
   describe "#description" do
