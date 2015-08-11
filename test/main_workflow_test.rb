@@ -18,18 +18,6 @@
 # current contact information at www.suse.com.
 # ------------------------------------------------------------------------------
 
-# fake Update class to avoid loading all Update dependencies
-module Yast
-  # Faked Update module
-  class UpdateClass
-    # we need at least one non-default methods, otherwise ruby-bindings thinks
-    # it is just namespace
-    def fake_method
-    end
-  end
-  Update = UpdateClass.new
-end
-
 require_relative "test_helper"
 
 require "migration/main_workflow"
