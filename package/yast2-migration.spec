@@ -32,6 +32,8 @@ BuildRequires:  rubygem(rspec)
 BuildRequires:  rubygem(yast-rake)
 BuildRequires:  yast2-packager
 BuildRequires:  yast2-ruby-bindings
+BuildRequires:  yast2-installation
+BuildRequires:  yast2-update
 # needed in build for testing
 Requires:	yast2
 Requires:	yast2-packager
