@@ -24,6 +24,10 @@ require "migration/main_workflow"
 
 describe Migration::MainWorkflow do
   describe ".run" do
+    let(:cmd_success) { { "exit" => 0 } }
+    let(:cmd_fail) { { "exit" => 1 } }
+    let(:bash_path) { Yast::Path.new(".target.bash_output") }
+
     def mock_client(name, res)
       allow(Yast::WFM).to receive(:CallFunction).with(*name).and_return(res)
     end
@@ -35,12 +39,18 @@ describe Migration::MainWorkflow do
       mock_client("inst_kickoff", :next)
       mock_client("inst_rpmcopy", :next)
 
-      cmd_success = { "exit" => 0 }
-      cmd_fail = { "exit" => 1 }
       allow(Yast::Update).to receive(:clean_backup)
       allow(Yast::Update).to receive(:create_backup)
       allow(Yast::Update).to receive(:restore_backup)
-      allow(Yast::SCR).to receive(:Execute).and_return(cmd_success, cmd_fail)
+      allow(Yast::SCR).to receive(:foo)
+
+      allow(Yast::SCR).to receive(:Execute).with(bash_path, /snapper .*list-configs/)
+        .and_return(cmd_success)
+      allow(Yast::SCR).to receive(:Execute).with(bash_path, /snapper create/).and_return(cmd_fail)
+      allow(Yast::Report).to receive(:Error).with(/Failed to create filesystem snapshot/)
+
+      allow_any_instance_of(Migration::FinishDialog).to receive(:run).and_return(:next)
+      allow_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(false)
     end
 
     it "pass workflow sequence to Yast sequencer" do
@@ -61,6 +71,25 @@ describe Migration::MainWorkflow do
       mock_client(["migration_proposals", [{ "hide_export" => true }]], :abort)
 
       expect(::Migration::MainWorkflow.run).to eq :abort
+    end
+
+    it "reboots the system at the end when requested" do
+      allow_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(true)
+
+      expect(Yast::SCR).to receive(:Execute).with(bash_path,
+        Migration::MainWorkflow::REBOOT_COMMAND).and_return(cmd_success)
+
+      expect(::Migration::MainWorkflow.run).to eq :next
+    end
+
+    it "reports an error when reboot fails" do
+      allow_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(true)
+
+      expect(Yast::SCR).to receive(:Execute).with(bash_path,
+        Migration::MainWorkflow::REBOOT_COMMAND).and_return(cmd_fail)
+      expect(Yast::Report).to receive(:Error).with(/Failed to schedule the system restart/)
+
+      expect(::Migration::MainWorkflow.run).to eq :next
     end
   end
 end

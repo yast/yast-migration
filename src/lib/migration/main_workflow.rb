@@ -25,6 +25,9 @@ Yast.import "Pkg"
 Yast.import "Sequencer"
 Yast.import "Update"
 Yast.import "Report"
+Yast.import "Popup"
+
+require "migration/finish_dialog"
 
 module Migration
   # The goal of the class is to provide main single entry point to start
@@ -48,7 +51,13 @@ module Migration
     def run
       textdomain "migration"
       Yast::Mode.SetMode("update")
-      Yast::Sequencer.Run(aliases, WORKFLOW_SEQUENCE)
+
+      begin
+        Yast::Wizard.CreateDialog
+        Yast::Sequencer.Run(aliases, WORKFLOW_SEQUENCE)
+      ensure
+        Yast::Wizard.CloseDialog
+      end
     end
 
     private
@@ -70,12 +79,20 @@ module Migration
         next: "perform_update"
       },
       "perform_update"  => {
+        next:  "finish_dialog"
+      },
+      "finish_dialog"   => {
+        abort: :abort,
         next:  :next
       },
       "restore"         => {
         abort: :abort
       }
     }
+
+    # reboot command: reboot in one minute to give the user a chance to finish YaST
+    # and log out, the reboot can be canceled by "shutdown -c" command if needed
+    REBOOT_COMMAND = "shutdown --reboot +1"
 
     def aliases
       {
@@ -84,7 +101,8 @@ module Migration
         "restore"         => ->() { restore_state },
         "perform_update"  => ->() { perform_update },
         "proposals"       => ->() { proposals },
-        "repositories"    => ->() { repositories }
+        "repositories"    => ->() { repositories },
+        "finish_dialog"   => ->() { finish_dialog }
       }
     end
 
@@ -134,7 +152,7 @@ module Migration
         FIND_CONFIG_CMD)
 
       log.info("Checking if Snapper is configured: \"#{FIND_CONFIG_CMD}\" " \
-        "returned: #{out}")
+          "returned: #{out}")
       out["exit"] == 0
     end
 
@@ -148,6 +166,26 @@ module Migration
 
       log.error "Snapshot could not be created: #{cmd} returned: #{out}"
       Yast::Report.Error(_("Failed to create filesystem snapshot."))
+    end
+
+    # display the finish dialog and optionally reboot the system
+    # @return [Sybmol] UI user input
+    def finish_dialog
+      dialog = Migration::FinishDialog.new
+      ret = dialog.run
+
+      if ret == :next && dialog.reboot
+        log.info "Rebooting the system in one minute..."
+
+        out = Yast::SCR.Execute(Yast::Path.new(".target.bash_output"), REBOOT_COMMAND)
+        if out["exit"] != 0
+          log.error "Reboot could not be scheduled: #{REBOOT_COMMAND} returned: #{out}"
+          Yast::Report.Error(_("Failed to schedule the system restart,\n" \
+                "restart the system manually."))
+        end
+      end
+
+      ret
     end
   end
 end

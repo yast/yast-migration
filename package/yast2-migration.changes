@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Aug 13 13:50:14 UTC 2015 - lslezak@suse.cz
+
+- display a finish dialog at the very end, suggest rebooting the
+  machine to activate the changes (new kernel, ...) (bsc#941625)
+
+-------------------------------------------------------------------
 Wed Aug  5 12:08:53 UTC 2015 - lslezak@suse.cz
 
 - display a warning for repositories providing an obsolete product
