@@ -29,15 +29,10 @@ module Migration
 
     Yast.import "UI"
     Yast.import "Wizard"
+    Yast.import "Popup"
     Yast.import "Label"
 
     attr_accessor :reboot
-
-    # run the dialog
-    def self.run
-      dialog = FinishDialog.new
-      dialog.run
-    end
 
     # constructor
     def initialize
@@ -66,7 +61,9 @@ module Migration
 
         if ret == :next && reboot?
           # TRANSLATORS: popup message, restart can be canceled by the [Cancel] button
-          if Yast::Popup.ContinueCancel(_("The system will be restarted in one minute."))
+          if Yast::Popup.ContinueCancel(_("The system will be restarted in one minute\n" \
+              "after closing this YaST module."))
+
             store_values
           else
             next
