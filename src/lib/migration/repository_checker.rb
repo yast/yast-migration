@@ -38,6 +38,7 @@ module Migration
       old_repos = obsolete_available_products.map { |product| product["source"] }
 
       # make sure the system repo or invalid values are filtered out
+      # (related to gh#yast/yast-registration#198)
       old_repos.reject! { |r| r < 0 }
 
       # remove (possible) duplicates
