@@ -25,17 +25,17 @@ describe Migration::FinishDialog do
     it "displays the finish message" do
       # check the displayed content
       expect(Yast::Wizard).to receive(:SetContents) do |_title, content, _help, _back, _next|
-        term = content.nested_find do |t|
+        richtext = content.nested_find do |t|
           t.respond_to?(:value) && t.value == :RichText &&
             t.params[2].match(/Congratulations!/)
         end
 
-        expect(term).to_not eq(nil)
+        expect(richtext).to_not eq(nil)
       end
 
       # user pressed the "Abort" button
       allow(Yast::UI).to receive(:UserInput).and_return(:abort)
-      subject.class.run
+      subject.run
     end
 
     it "when aborted reboot flag is not set and return :abort" do
@@ -45,7 +45,7 @@ describe Migration::FinishDialog do
       # user pressed the "Abort" button
       expect(Yast::UI).to receive(:UserInput).and_return(:abort)
 
-      expect(subject.class.run).to eq(:abort)
+      expect(subject.run).to eq(:abort)
       expect(subject.reboot).to eq(false)
     end
 

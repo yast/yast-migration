@@ -25,7 +25,6 @@ Yast.import "Pkg"
 Yast.import "Sequencer"
 Yast.import "Update"
 Yast.import "Report"
-Yast.import "Popup"
 
 require "migration/finish_dialog"
 
@@ -39,9 +38,14 @@ module Migration
 
     FIND_CONFIG_CMD = "/usr/bin/snapper --no-dbus list-configs | " \
       "grep \"^root \" >/dev/null"
+
     CREATE_SNAPSHOT_CMD = "/usr/bin/snapper create --type=%{snapshot_type} " \
       "--cleanup-algorithm=number --print-number " \
       "--description=\"%{description}\""
+
+    # reboot command: reboot in one minute to give the user a chance to finish YaST
+    # and log out, the reboot can be canceled by "shutdown -c" command if needed
+    REBOOT_COMMAND = "shutdown --reboot +1"
 
     def self.run
       workflow = new
@@ -89,10 +93,6 @@ module Migration
         abort: :abort
       }
     }
-
-    # reboot command: reboot in one minute to give the user a chance to finish YaST
-    # and log out, the reboot can be canceled by "shutdown -c" command if needed
-    REBOOT_COMMAND = "shutdown --reboot +1"
 
     def aliases
       {
@@ -152,7 +152,7 @@ module Migration
         FIND_CONFIG_CMD)
 
       log.info("Checking if Snapper is configured: \"#{FIND_CONFIG_CMD}\" " \
-          "returned: #{out}")
+        "returned: #{out}")
       out["exit"] == 0
     end
 
@@ -169,7 +169,7 @@ module Migration
     end
 
     # display the finish dialog and optionally reboot the system
-    # @return [Sybmol] UI user input
+    # @return [Symbol] UI user input
     def finish_dialog
       dialog = Migration::FinishDialog.new
       ret = dialog.run

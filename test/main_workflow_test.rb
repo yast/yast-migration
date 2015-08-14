@@ -42,11 +42,11 @@ describe Migration::MainWorkflow do
       allow(Yast::Update).to receive(:clean_backup)
       allow(Yast::Update).to receive(:create_backup)
       allow(Yast::Update).to receive(:restore_backup)
-      allow(Yast::SCR).to receive(:foo)
 
       allow(Yast::SCR).to receive(:Execute).with(bash_path, /snapper .*list-configs/)
         .and_return(cmd_success)
       allow(Yast::SCR).to receive(:Execute).with(bash_path, /snapper create/).and_return(cmd_fail)
+      # simulate snapper failure (to have a better code coverage)
       allow(Yast::Report).to receive(:Error).with(/Failed to create filesystem snapshot/)
 
       allow_any_instance_of(Migration::FinishDialog).to receive(:run).and_return(:next)
