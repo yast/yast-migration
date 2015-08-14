@@ -37,6 +37,9 @@ module Migration
     def obsolete_product_repos
       old_repos = obsolete_available_products.map { |product| product["source"] }
 
+      # make sure the system repo or invalid values are filtered out
+      old_repos.reject! { |r| r < 0 }
+
       # remove (possible) duplicates
       old_repos.uniq!
 
