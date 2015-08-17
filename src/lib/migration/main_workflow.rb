@@ -27,6 +27,7 @@ Yast.import "Update"
 Yast.import "Report"
 
 require "migration/finish_dialog"
+require "migration/restarter"
 
 module Migration
   # The goal of the class is to provide main single entry point to start
@@ -67,7 +68,11 @@ module Migration
     private
 
     WORKFLOW_SEQUENCE = {
-      "ws_start"        => "create_backup",
+      "ws_start"        => "start",
+      "start"           => {
+        start:   "create_backup",
+        restart: "finish_dialog"
+      },
       "create_backup"   => {
         next: "repositories"
       },
@@ -83,7 +88,13 @@ module Migration
         next: "perform_update"
       },
       "perform_update"  => {
-        next:  "finish_dialog"
+        abort: :abort,
+        next:  "restart_yast"
+      },
+      # note: the steps after the YaST restart use the new code from
+      # the updated (migrated) package!!
+      "restart_yast"    => {
+        next:  :next
       },
       "finish_dialog"   => {
         abort: :abort,
@@ -96,12 +107,16 @@ module Migration
 
     def aliases
       {
+        "start"           => ->() { start },
         "create_backup"   => ->() { create_backup },
         "create_snapshot" => ->() { create_snapshot },
         "restore"         => ->() { restore_state },
         "perform_update"  => ->() { perform_update },
         "proposals"       => ->() { proposals },
         "repositories"    => ->() { repositories },
+        # note: the steps after the YaST restart use the new code from
+        # the updated (migrated) package!!
+        "restart_yast"    => ->() { restart_yast },
         "finish_dialog"   => ->() { finish_dialog }
       }
     end
@@ -186,6 +201,20 @@ module Migration
       end
 
       ret
+    end
+
+    # evaluate the starting point for the workflow, start from the beginning
+    # or continue after restarting the YaST
+    # return [Symbol] workflow symbol
+    def start
+      Restarter.instance.restarted ? :restart : :start
+    end
+
+    # schedule YaST restart
+    # return [Symbol] workflow symbol (always :next)
+    def restart_yast
+      Restarter.instance.restart_yast
+      :next
     end
   end
 end

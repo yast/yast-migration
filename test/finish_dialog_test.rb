@@ -20,6 +20,8 @@
 
 require_relative "test_helper"
 
+require "migration/finish_dialog"
+
 describe Migration::FinishDialog do
   describe ".run" do
     it "displays the finish message" do
@@ -75,6 +77,5 @@ describe Migration::FinishDialog do
       expect(subject.run).to eq(:next)
       expect(subject.reboot).to eq(false)
     end
-
   end
 end
