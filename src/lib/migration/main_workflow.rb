@@ -27,6 +27,7 @@ Yast.import "Update"
 Yast.import "Report"
 
 require "migration/finish_dialog"
+require "migration/restarter"
 
 module Migration
   # The goal of the class is to provide main single entry point to start
@@ -42,10 +43,6 @@ module Migration
     CREATE_SNAPSHOT_CMD = "/usr/bin/snapper create --type=%{snapshot_type} " \
       "--cleanup-algorithm=number --print-number " \
       "--description=\"%{description}\""
-
-    # reboot command: reboot in one minute to give the user a chance to finish YaST
-    # and log out, the reboot can be canceled by "shutdown -c" command if needed
-    REBOOT_COMMAND = "shutdown --reboot +1"
 
     def self.run
       workflow = new
@@ -67,7 +64,11 @@ module Migration
     private
 
     WORKFLOW_SEQUENCE = {
-      "ws_start"        => "create_backup",
+      "ws_start"        => "start",
+      "start"           => {
+        start:   "create_backup",
+        restart: "finish_dialog"
+      },
       "create_backup"   => {
         next: "repositories"
       },
@@ -83,7 +84,13 @@ module Migration
         next: "perform_update"
       },
       "perform_update"  => {
-        next:  "finish_dialog"
+        abort: :abort,
+        next:  "restart_yast"
+      },
+      # note: the steps after the YaST restart use the new code from
+      # the updated (migrated) package!!
+      "restart_yast"    => {
+        next:  :next
       },
       "finish_dialog"   => {
         abort: :abort,
@@ -96,12 +103,16 @@ module Migration
 
     def aliases
       {
+        "start"           => ->() { start },
         "create_backup"   => ->() { create_backup },
         "create_snapshot" => ->() { create_snapshot },
         "restore"         => ->() { restore_state },
         "perform_update"  => ->() { perform_update },
         "proposals"       => ->() { proposals },
         "repositories"    => ->() { repositories },
+        # note: the steps after the YaST restart use the new code from
+        # the updated (migrated) package!!
+        "restart_yast"    => ->() { restart_yast },
         "finish_dialog"   => ->() { finish_dialog }
       }
     end
@@ -175,17 +186,25 @@ module Migration
       ret = dialog.run
 
       if ret == :next && dialog.reboot
-        log.info "Rebooting the system in one minute..."
-
-        out = Yast::SCR.Execute(Yast::Path.new(".target.bash_output"), REBOOT_COMMAND)
-        if out["exit"] != 0
-          log.error "Reboot could not be scheduled: #{REBOOT_COMMAND} returned: #{out}"
-          Yast::Report.Error(_("Failed to schedule the system restart,\n" \
-                "restart the system manually."))
-        end
+        log.info "Preparing the system for reboot..."
+        Restarter.instance.reboot
       end
 
       ret
+    end
+
+    # evaluate the starting point for the workflow, start from the beginning
+    # or continue after restarting the YaST
+    # return [Symbol] workflow symbol
+    def start
+      Restarter.instance.restarted ? :restart : :start
+    end
+
+    # schedule YaST restart
+    # return [Symbol] workflow symbol (always :next)
+    def restart_yast
+      Restarter.instance.restart_yast
+      :next
     end
   end
 end
