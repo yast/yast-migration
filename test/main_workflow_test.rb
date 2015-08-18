@@ -25,6 +25,7 @@ require "migration/main_workflow"
 describe Migration::MainWorkflow do
   describe ".run" do
     let(:cmd_success) { { "exit" => 0 } }
+    let(:snapshot_created) { { "exit" => 0, "stdout" => "146\n" } }
     let(:cmd_fail) { { "exit" => 1 } }
     let(:bash_path) { Yast::Path.new(".target.bash_output") }
 
@@ -47,7 +48,7 @@ describe Migration::MainWorkflow do
         .and_return(cmd_success)
       allow(Yast::SCR).to receive(:Execute).with(bash_path, /snapper create/).and_return(cmd_fail)
       # simulate snapper failure (to have a better code coverage)
-      allow(Yast::Report).to receive(:Error).with(/Failed to create filesystem snapshot/)
+      allow(Yast::Report).to receive(:Error).with(/Failed to create a filesystem snapshot/)
 
       allow(File).to receive(:write).with(Migration::Restarter::MIGRATION_RESTART, "")
       allow(File).to receive(:write).with(Migration::Restarter::RESTART_FILE, "")
@@ -74,6 +75,18 @@ describe Migration::MainWorkflow do
       mock_client(["migration_proposals", [{ "hide_export" => true }]], :abort)
 
       expect(::Migration::MainWorkflow.run).to eq :abort
+    end
+
+    it "creates a pre and post snapshots around the online migration" do
+      expect(Yast::SCR).to receive(:Execute).with(bash_path, /snapper create .*--type=pre/)
+        .and_return(snapshot_created).ordered
+
+      mock_client("inst_rpmcopy", :next).ordered
+
+      expect(Yast::SCR).to receive(:Execute).with(bash_path,
+        /snapper create .*--type=post .*--pre-number=146/).and_return(cmd_success).ordered
+
+      expect(subject.run).to eq :next
     end
 
     it "reboots the system at the end when requested" do

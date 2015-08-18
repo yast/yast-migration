@@ -21,7 +21,6 @@
 require "yast"
 
 Yast.import "Mode"
-Yast.import "Pkg"
 Yast.import "Sequencer"
 Yast.import "Update"
 Yast.import "Report"
@@ -63,57 +62,64 @@ module Migration
 
     private
 
+    # remeber the "pre" snapshot id (needed for the "post" snapshot)
+    attr_accessor :pre_snapshot
+
     WORKFLOW_SEQUENCE = {
-      "ws_start"        => "start",
-      "start"           => {
-        start:   "create_backup",
+      "ws_start"             => "start",
+      "start"                => {
+        start:   "create_pre_snapshot",
         restart: "finish_dialog"
       },
-      "create_backup"   => {
+      "create_pre_snapshot"  => {
+        next: "create_backup"
+      },
+      "create_backup"        => {
         next: "repositories"
       },
-      "repositories"    => {
+      "repositories"         => {
         abort: "restore",
         next:  "proposals"
       },
-      "proposals"       => {
+      "proposals"            => {
         abort: "restore",
-        next:  "create_snapshot"
+        next:  "perform_update"
       },
-      "create_snapshot" => {
-        next: "perform_update"
-      },
-      "perform_update"  => {
+      "perform_update"       => {
         abort: :abort,
-        next:  "restart_yast"
+        next:  "create_post_snapshot"
+      },
+      "create_post_snapshot" => {
+        next: "restart_yast"
+      },
+      "restore"              => {
+        abort: :abort
       },
       # note: the steps after the YaST restart use the new code from
       # the updated (migrated) package!!
-      "restart_yast"    => {
+      "restart_yast"         => {
         next:  :next
       },
-      "finish_dialog"   => {
+      "finish_dialog"        => {
         abort: :abort,
         next:  :next
-      },
-      "restore"         => {
-        abort: :abort
       }
     }
 
     def aliases
       {
-        "start"           => ->() { start },
-        "create_backup"   => ->() { create_backup },
-        "create_snapshot" => ->() { create_snapshot },
-        "restore"         => ->() { restore_state },
-        "perform_update"  => ->() { perform_update },
-        "proposals"       => ->() { proposals },
-        "repositories"    => ->() { repositories },
+        "start"                => ->() { start },
+        "create_pre_snapshot"  => ->() { create_pre_snapshot },
+        "create_backup"        => ->() { create_backup },
+        "restore"              => ->() { restore_state },
+        "perform_update"       => ->() { perform_update },
+        "proposals"            => ->() { proposals },
+        "repositories"         => ->() { repositories },
+        "create_post_snapshot" => ->() { create_post_snapshot },
         # note: the steps after the YaST restart use the new code from
         # the updated (migrated) package!!
-        "restart_yast"    => ->() { restart_yast },
-        "finish_dialog"   => ->() { finish_dialog }
+        "restart_yast"         => ->() { restart_yast },
+        "finish_dialog"        => ->() { finish_dialog }
       }
     end
 
@@ -153,30 +159,56 @@ module Migration
       :next
     end
 
-    def create_snapshot
-      perform_snapshot if snapper_configured?
+    def create_pre_snapshot
+      if snapper_configured?
+        self.pre_snapshot = perform_snapshot(:pre, "before online migration")
+      end
+
       :next
     end
 
+    def create_post_snapshot
+      if snapper_configured? && pre_snapshot
+        perform_snapshot(:post, "after online migration", pre_snapshot)
+      end
+
+      :next
+    end
+
+    # check whether snapper is configured
+    # @return [Boolean] true if snapper is configured
     def snapper_configured?
       out = Yast::SCR.Execute(Yast::Path.new(".target.bash_output"),
         FIND_CONFIG_CMD)
 
-      log.info("Checking if Snapper is configured: \"#{FIND_CONFIG_CMD}\" " \
-        "returned: #{out}")
+      log.debug "Checking snapper config: '#{FIND_CONFIG_CMD}'"
+      log.info "Found snapper config: #{out}"
+
       out["exit"] == 0
     end
 
-    def perform_snapshot
-      cmd = format(CREATE_SNAPSHOT_CMD,
-        snapshot_type: :single,
-        description:   "before update on migration")
+    # create a filesystem snapshot
+    # @param [Symbol, String] type the type of the snapshot (:single, :pre or :post)
+    # @param [String] desc description of the snapshot for users
+    # @param [Fixnum] pre_id id of the respective "pre" snapshot (needed
+    #   only for "post" type snapshots)
+    # @return [Fixnum,nil] id of the created snapshot (nil if failed)
+    def perform_snapshot(type, desc, pre_id = nil)
+      cmd = format(CREATE_SNAPSHOT_CMD, snapshot_type: type, description: desc)
+      cmd << " --pre-number=#{pre_id}" if pre_id
 
+      log.info "Creating snapshot: #{cmd}"
       out = Yast::SCR.Execute(Yast::Path.new(".target.bash_output"), cmd)
-      return :next if out["exit"] == 0
 
-      log.error "Snapshot could not be created: #{cmd} returned: #{out}"
-      Yast::Report.Error(_("Failed to create filesystem snapshot."))
+      if out["exit"] == 0
+        ret = out["stdout"].to_i
+        log.info "Created snapshot: #{ret}"
+        return ret
+      end
+
+      log.error "Snapshot could not be created: #{out}"
+      Yast::Report.Error(_("Failed to create a filesystem snapshot."))
+      nil
     end
 
     # display the finish dialog and optionally reboot the system
