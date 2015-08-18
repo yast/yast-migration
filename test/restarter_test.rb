@@ -27,12 +27,14 @@ describe Migration::Restarter do
   # see http://stackoverflow.com/a/26172556/633234
   subject { Class.new(Migration::Restarter).instance }
 
-  describe "#restarted" do
-    before do
-      allow(File).to receive(:exist?).with(Migration::Restarter::RESTART_FILE)
-        .and_return(false)
-    end
+  before do
+    allow(File).to receive(:exist?).with(Migration::Restarter::MIGRATION_RESTART)
+      .and_return(false)
+    allow(File).to receive(:exist?).with(Migration::Restarter::RESTART_FILE)
+      .and_return(false)
+  end
 
+  describe "#restarted" do
     context "restart flag set" do
       before do
         expect(File).to receive(:exist?).with(Migration::Restarter::MIGRATION_RESTART)
@@ -46,11 +48,6 @@ describe Migration::Restarter do
     end
 
     context "restart flag not set" do
-      before do
-        expect(File).to receive(:exist?).with(Migration::Restarter::MIGRATION_RESTART)
-          .twice.and_return(false)
-      end
-
       it "returns false" do
         expect(File).to_not receive(:unlink).with(Migration::Restarter::MIGRATION_RESTART)
         expect(subject.restarted).to eq(false)
@@ -59,13 +56,6 @@ describe Migration::Restarter do
   end
 
   describe "#restart_yast" do
-    before do
-      allow(File).to receive(:exist?).with(Migration::Restarter::MIGRATION_RESTART)
-        .and_return(false)
-      allow(File).to receive(:exist?).with(Migration::Restarter::RESTART_FILE)
-        .and_return(false)
-    end
-
     it "set the restart flags" do
       expect(File).to receive(:write).with(Migration::Restarter::RESTART_FILE, "")
       expect(File).to receive(:write).with(Migration::Restarter::MIGRATION_RESTART, "")
@@ -73,4 +63,21 @@ describe Migration::Restarter do
       subject.restart_yast
     end
   end
+
+  describe "#reboot" do
+    it "set the reboot flag" do
+      expect(File).to receive(:write).with(Migration::Restarter::REBOOT_FILE, "")
+      subject.reboot
+    end
+  end
+
+  describe "#clear_reboot" do
+    it "clears the reboot flag if set" do
+      expect(File).to receive(:exist?).with(Migration::Restarter::REBOOT_FILE)
+        .and_return(true)
+      expect(File).to receive(:unlink).with(Migration::Restarter::REBOOT_FILE)
+      subject.clear_reboot
+    end
+  end
+
 end

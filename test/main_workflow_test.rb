@@ -79,22 +79,10 @@ describe Migration::MainWorkflow do
     it "reboots the system at the end when requested" do
       allow_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(true)
       allow_any_instance_of(Migration::Restarter).to receive(:restarted).and_return(true)
-
-      expect(Yast::SCR).to receive(:Execute).with(bash_path,
-        Migration::MainWorkflow::REBOOT_COMMAND).and_return(cmd_success)
+      allow_any_instance_of(Migration::Restarter).to receive(:reboot)
 
       expect(::Migration::MainWorkflow.run).to eq :next
     end
 
-    it "reports an error when reboot fails" do
-      allow_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(true)
-      allow_any_instance_of(Migration::Restarter).to receive(:restarted).and_return(true)
-
-      expect(Yast::SCR).to receive(:Execute).with(bash_path,
-        Migration::MainWorkflow::REBOOT_COMMAND).and_return(cmd_fail)
-      expect(Yast::Report).to receive(:Error).with(/Failed to schedule the system restart/)
-
-      expect(::Migration::MainWorkflow.run).to eq :next
-    end
   end
 end
