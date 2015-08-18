@@ -24,6 +24,10 @@ require "migration/finish_dialog"
 
 describe Migration::FinishDialog do
   describe ".run" do
+    before do
+      allow(Yast::Wizard).to receive(:SetContents)
+    end
+
     it "displays the finish message" do
       # check the displayed content
       expect(Yast::Wizard).to receive(:SetContents) do |_title, content, _help, _back, _next|
@@ -41,9 +45,6 @@ describe Migration::FinishDialog do
     end
 
     it "when aborted reboot flag is not set and return :abort" do
-      # check the displayed content
-      allow(Yast::Wizard).to receive(:SetContents)
-
       # user pressed the "Abort" button
       expect(Yast::UI).to receive(:UserInput).and_return(:abort)
 
@@ -51,31 +52,31 @@ describe Migration::FinishDialog do
       expect(subject.reboot).to eq(false)
     end
 
-    it "displays a confirmation when reboot is requested" do
-      allow(Yast::Wizard).to receive(:SetContents)
-
+    it "asks for reboot after pressing [Finish]" do
       # user pressed the "Next" button
       expect(Yast::UI).to receive(:UserInput).and_return(:next)
-      allow(Yast::UI).to receive(:QueryWidget).with(:reboot, :Value).and_return(true)
+      expect(Yast::Popup).to receive(:AnyQuestion).and_return(true)
 
-      expect(Yast::Popup).to receive(:ContinueCancel).and_return(true)
+      expect(subject.run).to eq(:next)
+    end
+
+    it "sets the reboot flag when reboot is confirmed" do
+      # user pressed the "Next" button
+      expect(Yast::UI).to receive(:UserInput).and_return(:next)
+      expect(Yast::Popup).to receive(:AnyQuestion).and_return(true)
 
       expect(subject.run).to eq(:next)
       expect(subject.reboot).to eq(true)
     end
 
-    it "goes back when reboot is rejected" do
-      allow(Yast::Wizard).to receive(:SetContents)
-
+    it "does not set the reboot flag when reboot is not confirmed" do
       # user pressed the "Next" button
-      allow(Yast::UI).to receive(:UserInput).and_return(:next)
-      # reboot is disabled at the second attempt
-      allow(Yast::UI).to receive(:QueryWidget).with(:reboot, :Value).and_return(true, false)
-
-      expect(Yast::Popup).to receive(:ContinueCancel).and_return(false)
+      expect(Yast::UI).to receive(:UserInput).and_return(:next)
+      expect(Yast::Popup).to receive(:AnyQuestion).and_return(false)
 
       expect(subject.run).to eq(:next)
       expect(subject.reboot).to eq(false)
     end
+
   end
 end

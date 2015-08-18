@@ -11,6 +11,7 @@ module Migration
     Yast.import "Installation"
     Yast.import "Directory"
 
+    REBOOT_FILE = Yast::Installation.reboot_file
     RESTART_FILE = Yast::Installation.restart_file
     # the generic restart file is removed by the yast script before starting
     # YaST again, we need an extra file to distinguish restart and full start
@@ -30,6 +31,14 @@ module Migration
     def restart_yast
       File.write(RESTART_FILE, "")
       File.write(MIGRATION_RESTART, "")
+    end
+
+    def reboot
+      File.write(REBOOT_FILE, "")
+    end
+
+    def clear_reboot
+      File.unlink(REBOOT_FILE) if File.exist?(REBOOT_FILE)
     end
 
     # clear the set restart flags

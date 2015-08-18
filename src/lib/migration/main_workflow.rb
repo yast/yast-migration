@@ -44,10 +44,6 @@ module Migration
       "--cleanup-algorithm=number --print-number " \
       "--description=\"%{description}\""
 
-    # reboot command: reboot in one minute to give the user a chance to finish YaST
-    # and log out, the reboot can be canceled by "shutdown -c" command if needed
-    REBOOT_COMMAND = "shutdown --reboot +1"
-
     def self.run
       workflow = new
       workflow.run
@@ -190,14 +186,8 @@ module Migration
       ret = dialog.run
 
       if ret == :next && dialog.reboot
-        log.info "Rebooting the system in one minute..."
-
-        out = Yast::SCR.Execute(Yast::Path.new(".target.bash_output"), REBOOT_COMMAND)
-        if out["exit"] != 0
-          log.error "Reboot could not be scheduled: #{REBOOT_COMMAND} returned: #{out}"
-          Yast::Report.Error(_("Failed to schedule the system restart,\n" \
-                "restart the system manually."))
-        end
+        log.info "Preparing the system for reboot..."
+        Restarter.instance.reboot
       end
 
       ret
