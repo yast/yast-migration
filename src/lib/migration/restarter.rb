@@ -21,6 +21,7 @@
 require "yast"
 
 require "singleton"
+require "yaml"
 
 module Migration
   # this class handles restarting the YaST module during online migration
@@ -34,22 +35,24 @@ module Migration
     RESTART_FILE = Yast::Installation.restart_file
     # the generic restart file is removed by the yast script before starting
     # YaST again, we need an extra file to distinguish restart and full start
-    MIGRATION_RESTART = Yast::Directory.vardir + "/migration_restarted"
+    # and to pass some data between the restarts
+    MIGRATION_RESTART = Yast::Directory.vardir + "/migration_restart.yml"
 
-    attr_reader :restarted
+    attr_reader :restarted, :data
 
     # read the restart flag and remove it immediately to avoid
     # possible restart loop
     def initialize
       @restarted = File.exist?(MIGRATION_RESTART)
+      @data = YAML.load_file(MIGRATION_RESTART) if restarted
 
       clear_restart
     end
 
     # set the restart flag
-    def restart_yast
+    def restart_yast(data = nil)
       File.write(RESTART_FILE, "")
-      File.write(MIGRATION_RESTART, "")
+      File.write(MIGRATION_RESTART, data.to_yaml)
     end
 
     def reboot

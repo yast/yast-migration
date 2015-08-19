@@ -26,6 +26,7 @@ describe Migration::Restarter do
   # create a new anonymous instance for each test to avoid test dependencies
   # see http://stackoverflow.com/a/26172556/633234
   subject { Class.new(Migration::Restarter).instance }
+  let(:nil_yaml) { "--- \n...\n" }
 
   before do
     allow(File).to receive(:exist?).with(Migration::Restarter::MIGRATION_RESTART)
@@ -39,6 +40,7 @@ describe Migration::Restarter do
       before do
         expect(File).to receive(:exist?).with(Migration::Restarter::MIGRATION_RESTART)
           .twice.and_return(true)
+        expect(YAML).to receive(:load_file).with(Migration::Restarter::MIGRATION_RESTART)
       end
 
       it "removes the restart flag and returns true" do
@@ -58,7 +60,7 @@ describe Migration::Restarter do
   describe "#restart_yast" do
     it "set the restart flags" do
       expect(File).to receive(:write).with(Migration::Restarter::RESTART_FILE, "")
-      expect(File).to receive(:write).with(Migration::Restarter::MIGRATION_RESTART, "")
+      expect(File).to receive(:write).with(Migration::Restarter::MIGRATION_RESTART, nil_yaml)
 
       subject.restart_yast
     end
