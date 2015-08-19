@@ -3,13 +3,13 @@ Wed Aug 19 10:36:35 UTC 2015 - lslezak@suse.cz
 
 - create the "post" snapshot after restart to avoid possible issues
   with fast_gettext (bnc#942080)
+- 3.1.0.5
 
 -------------------------------------------------------------------
 Tue Aug 18 15:59:50 UTC 2015 - lslezak@suse.cz
 
 - create a pair of "pre" and "post" filesystem snapshots (instead
   of a single snapshot) (bsc#942110)
-- 3.1.6
 
 -------------------------------------------------------------------
 Tue Aug 18 07:58:27 UTC 2015 - lslezak@suse.cz
