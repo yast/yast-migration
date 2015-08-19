@@ -28,6 +28,7 @@ describe Migration::MainWorkflow do
     let(:snapshot_created) { { "exit" => 0, "stdout" => "146\n" } }
     let(:cmd_fail) { { "exit" => 1 } }
     let(:bash_path) { Yast::Path.new(".target.bash_output") }
+    let(:nil_yaml) { "--- \n...\n" }
 
     def mock_client(name, res)
       allow(Yast::WFM).to receive(:CallFunction).with(*name).and_return(res)
@@ -50,7 +51,7 @@ describe Migration::MainWorkflow do
       # simulate snapper failure (to have a better code coverage)
       allow(Yast::Report).to receive(:Error).with(/Failed to create a filesystem snapshot/)
 
-      allow(File).to receive(:write).with(Migration::Restarter::MIGRATION_RESTART, "")
+      allow(File).to receive(:write).with(Migration::Restarter::MIGRATION_RESTART, nil_yaml)
       allow(File).to receive(:write).with(Migration::Restarter::RESTART_FILE, "")
 
       allow_any_instance_of(Migration::FinishDialog).to receive(:run).and_return(:next)
