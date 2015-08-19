@@ -50,8 +50,7 @@ describe Migration::MainWorkflow do
       # simulate snapper failure (to have a better code coverage)
       allow(Yast::Report).to receive(:Error).with(/Failed to create a filesystem snapshot/)
 
-      allow(File).to receive(:write).with(Migration::Restarter::MIGRATION_RESTART, "")
-      allow(File).to receive(:write).with(Migration::Restarter::RESTART_FILE, "")
+      allow_any_instance_of(Migration::Restarter).to receive(:restart_yast)
 
       allow_any_instance_of(Migration::FinishDialog).to receive(:run).and_return(:next)
       allow_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(false)
@@ -77,14 +76,23 @@ describe Migration::MainWorkflow do
       expect(::Migration::MainWorkflow.run).to eq :abort
     end
 
-    it "creates a pre and post snapshots around the online migration" do
+    it "creates a pre snapshot before starting the migration" do
       expect(Yast::SCR).to receive(:Execute).with(bash_path, /snapper create .*--type=pre/)
         .and_return(snapshot_created).ordered
-
       mock_client("inst_rpmcopy", :next).ordered
 
+      expect_any_instance_of(Migration::Restarter).to receive(:restart_yast)
+        .with(pre_snapshot: 146)
+
+      expect(subject.run).to eq :next
+    end
+
+    it "creates a post snapshot aftert YaST restart" do
+      allow_any_instance_of(Migration::Restarter).to receive(:restarted).and_return(true)
+      allow_any_instance_of(Migration::Restarter).to receive(:data).and_return(pre_snapshot: 146)
+
       expect(Yast::SCR).to receive(:Execute).with(bash_path,
-        /snapper create .*--type=post .*--pre-number=146/).and_return(cmd_success).ordered
+        /snapper create .*--type=post .*--pre-number=146/).and_return(cmd_success)
 
       expect(subject.run).to eq :next
     end
