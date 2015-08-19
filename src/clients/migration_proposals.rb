@@ -18,9 +18,9 @@
 # current contact information at www.suse.com.
 # ------------------------------------------------------------------------------
 
+require "yast"
 require "migration/proposal_store"
 require "installation/proposal_runner"
-require "yast"
 
 Yast.import "Wizard"
 

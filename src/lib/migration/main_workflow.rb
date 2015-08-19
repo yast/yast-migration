@@ -69,7 +69,7 @@ module Migration
       "ws_start"             => "start",
       "start"                => {
         start:   "create_pre_snapshot",
-        restart: "finish_dialog"
+        restart: "create_post_snapshot"
       },
       "create_pre_snapshot"  => {
         next: "create_backup"
@@ -87,18 +87,18 @@ module Migration
       },
       "perform_update"       => {
         abort: :abort,
-        next:  "create_post_snapshot"
-      },
-      "create_post_snapshot" => {
-        next: "restart_yast"
+        next:  "restart_yast"
       },
       "restore"              => {
         abort: :abort
       },
-      # note: the steps after the YaST restart use the new code from
-      # the updated (migrated) package!!
       "restart_yast"         => {
         next:  :next
+      },
+      # note: the steps after the YaST restart use the new code from
+      # the updated (migrated) yast2-migration package!!
+      "create_post_snapshot" => {
+        next: "finish_dialog"
       },
       "finish_dialog"        => {
         abort: :abort,
@@ -115,10 +115,10 @@ module Migration
         "perform_update"       => ->() { perform_update },
         "proposals"            => ->() { proposals },
         "repositories"         => ->() { repositories },
-        "create_post_snapshot" => ->() { create_post_snapshot },
-        # note: the steps after the YaST restart use the new code from
-        # the updated (migrated) package!!
         "restart_yast"         => ->() { restart_yast },
+        # note: the steps after the YaST restart use the new code from
+        # the updated (migrated) yast2-migration package!!
+        "create_post_snapshot" => ->() { create_post_snapshot },
         "finish_dialog"        => ->() { finish_dialog }
       }
     end
@@ -229,13 +229,21 @@ module Migration
     # or continue after restarting the YaST
     # return [Symbol] workflow symbol
     def start
-      Restarter.instance.restarted ? :restart : :start
+      return :start unless Restarter.instance.restarted
+
+      # reload the stored snapshot id (from the previous run)
+      if Restarter.instance.data.is_a?(Hash)
+        self.pre_snapshot = Restarter.instance.data[:pre_snapshot]
+      end
+
+      :restart
     end
 
     # schedule YaST restart
     # return [Symbol] workflow symbol (always :next)
     def restart_yast
-      Restarter.instance.restart_yast
+      # save the snapshot for later (after restart)
+      Restarter.instance.restart_yast(pre_snapshot: pre_snapshot)
       :next
     end
   end
