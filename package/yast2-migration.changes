@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Sep  1 11:08:47 UTC 2015 - lslezak@suse.cz
+
+- disable "Back" at the initial dialog
+
+-------------------------------------------------------------------
 Wed Aug 19 10:36:35 UTC 2015 - lslezak@suse.cz
 
 - create the "post" snapshot after restart to avoid possible issues

@@ -144,7 +144,7 @@ module Migration
     end
 
     def repositories
-      Yast::WFM.CallFunction("migration_repos")
+      Yast::WFM.CallFunction("migration_repos", [{ "enable_back" => false }])
     end
 
     def proposals
