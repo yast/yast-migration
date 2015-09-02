@@ -3,7 +3,7 @@ Type=Application
 Categories=Settings;System;Qt;X-SuSE-YaST;X-SuSE-YaST-System;
 
 X-KDE-ModuleType=Library
-X-SuSE-YaST-Call=bootloader
+X-SuSE-YaST-Call=migration
 
 X-SuSE-YaST-Group=Software
 X-SuSE-YaST-Argument=
