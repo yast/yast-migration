@@ -2,6 +2,8 @@
 Tue Sep  1 11:08:47 UTC 2015 - lslezak@suse.cz
 
 - disable "Back" at the initial dialog
+- restore (enable) the Updates repositories at the end of the
+  migration workflow (bsc#943960)
 
 -------------------------------------------------------------------
 Wed Aug 19 10:36:35 UTC 2015 - lslezak@suse.cz

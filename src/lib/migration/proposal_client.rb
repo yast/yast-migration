@@ -178,6 +178,9 @@ module Migration
 
       log.info "Disabling repository #{repo}"
       Pkg.SourceSetEnabled(repo, false)
+
+      # disable the old repo permanently to not possibly mess the system later
+      Pkg.SourceSaveAll
     end
 
     # proposal help text

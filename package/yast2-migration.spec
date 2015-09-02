@@ -40,7 +40,7 @@ Requires:	yast2-packager
 Requires:	yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
 # new registration with migration support
-Requires:       yast2-registration >= 3.1.127.1
+Requires:       yast2-registration >= 3.1.129.5
 Requires:       yast2-update
 
 BuildArch: noarch
