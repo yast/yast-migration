@@ -39,6 +39,7 @@ describe Migration::MainWorkflow do
       mock_client("inst_prepareprogress", :next)
       mock_client("inst_kickoff", :next)
       mock_client("inst_rpmcopy", :next)
+      mock_client("migration_finish", :next)
 
       allow(Yast::Update).to receive(:clean_backup)
       allow(Yast::Update).to receive(:create_backup)

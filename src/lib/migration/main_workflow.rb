@@ -69,7 +69,7 @@ module Migration
       "ws_start"             => "start",
       "start"                => {
         start:   "create_pre_snapshot",
-        restart: "create_post_snapshot"
+        restart: "migration_finish"
       },
       "create_pre_snapshot"  => {
         next: "create_backup"
@@ -97,6 +97,10 @@ module Migration
       },
       # note: the steps after the YaST restart use the new code from
       # the updated (migrated) yast2-migration package!!
+      "migration_finish"     => {
+        abort: :abort,
+        next:  "create_post_snapshot"
+      },
       "create_post_snapshot" => {
         next: "finish_dialog"
       },
@@ -118,6 +122,7 @@ module Migration
         "restart_yast"         => ->() { restart_yast },
         # note: the steps after the YaST restart use the new code from
         # the updated (migrated) yast2-migration package!!
+        "migration_finish"     => ->() { migration_finish },
         "create_post_snapshot" => ->() { create_post_snapshot },
         "finish_dialog"        => ->() { finish_dialog }
       }
@@ -173,6 +178,10 @@ module Migration
       end
 
       :next
+    end
+
+    def migration_finish
+      Yast::WFM.CallFunction("migration_finish")
     end
 
     # check whether snapper is configured
