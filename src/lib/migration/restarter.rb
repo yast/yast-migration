@@ -26,6 +26,7 @@ require "yaml"
 module Migration
   # this class handles restarting the YaST module during online migration
   class Restarter
+    include Yast::Logger
     include Singleton
 
     Yast.import "Installation"
@@ -46,25 +47,36 @@ module Migration
       @restarted = File.exist?(MIGRATION_RESTART)
       @data = YAML.load_file(MIGRATION_RESTART) if restarted
 
+      log.info "Initialized restart status: #{inspect}"
+
       clear_restart
     end
 
     # set the restart flag
+    # @param [Object] data optional data saved in the restart file, the data will
+    # be available after the restart
     def restart_yast(data = nil)
+      log.info "Creating the restart file"
       File.write(RESTART_FILE, "")
+      log.info "Storing restart data: #{data.inspect}"
       File.write(MIGRATION_RESTART, data.to_yaml)
     end
 
+    # create the reboot file, yast will reboot the machine after finishing the module
     def reboot
+      log.info "Creating the reboot file"
       File.write(REBOOT_FILE, "")
     end
 
+    # clear the reboot file
     def clear_reboot
+      log.info "Clearing the reboot file"
       File.unlink(REBOOT_FILE) if File.exist?(REBOOT_FILE)
     end
 
     # clear the set restart flags
     def clear_restart
+      log.info "Clearing the restart file"
       File.unlink(RESTART_FILE) if File.exist?(RESTART_FILE)
       File.unlink(MIGRATION_RESTART) if File.exist?(MIGRATION_RESTART)
     end
