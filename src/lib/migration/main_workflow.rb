@@ -157,8 +157,11 @@ module Migration
     end
 
     def perform_update
+      # this client is located in the yast2-installation package
       Yast::WFM.CallFunction("inst_prepareprogress")
+      # this client is located in the yast2-packager package
       Yast::WFM.CallFunction("inst_kickoff")
+      # this client is located in the yast2-packager package
       Yast::WFM.CallFunction("inst_rpmcopy")
 
       :next
@@ -181,6 +184,7 @@ module Migration
     end
 
     def migration_finish
+      # this client is located in the yast2-registration package
       Yast::WFM.CallFunction("migration_finish")
     end
 
