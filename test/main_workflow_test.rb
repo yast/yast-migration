@@ -34,11 +34,12 @@ describe Migration::MainWorkflow do
     end
 
     before do
-      mock_client("migration_repos", :next)
+      mock_client(["migration_repos", [{ "enable_back" => false }]], :next)
       mock_client(["migration_proposals", [{ "hide_export" => true }]], :next)
       mock_client("inst_prepareprogress", :next)
       mock_client("inst_kickoff", :next)
       mock_client("inst_rpmcopy", :next)
+      mock_client("migration_finish", :next)
 
       allow(Yast::Update).to receive(:clean_backup)
       allow(Yast::Update).to receive(:create_backup)
