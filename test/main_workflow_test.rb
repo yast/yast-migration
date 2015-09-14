@@ -55,6 +55,8 @@ describe Migration::MainWorkflow do
 
       allow_any_instance_of(Migration::FinishDialog).to receive(:run).and_return(:next)
       allow_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(false)
+
+      allow(ENV).to receive(:[]=).with("DISABLE_SNAPPER_ZYPP_PLUGIN", anything)
     end
 
     it "pass workflow sequence to Yast sequencer" do

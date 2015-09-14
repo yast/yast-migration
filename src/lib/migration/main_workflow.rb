@@ -40,7 +40,7 @@ module Migration
       "grep \"^root \" >/dev/null"
 
     CREATE_SNAPSHOT_CMD = "/usr/bin/snapper create --type=%{snapshot_type} " \
-      "--cleanup-algorithm=number --print-number " \
+      "--cleanup-algorithm=number --print-number --userdata important=yes " \
       "--description=\"%{description}\""
 
     def self.run
@@ -157,6 +157,9 @@ module Migration
     end
 
     def perform_update
+      # disable the default snapshots created by the zypp plugin
+      ENV["DISABLE_SNAPPER_ZYPP_PLUGIN"] = "1"
+
       # this client is located in the yast2-installation package
       Yast::WFM.CallFunction("inst_prepareprogress")
       # this client is located in the yast2-packager package
