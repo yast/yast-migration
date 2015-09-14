@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Sep 14 07:37:39 UTC 2015 - lslezak@suse.cz
+
+- add "important" flag to the snapshots created by the migration
+  module (bsc#944019)
+
+-------------------------------------------------------------------
 Tue Sep  1 11:08:47 UTC 2015 - lslezak@suse.cz
 
 - disable "Back" at the initial dialog
