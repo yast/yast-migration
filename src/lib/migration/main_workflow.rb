@@ -40,7 +40,7 @@ module Migration
       "grep \"^root \" >/dev/null"
 
     CREATE_SNAPSHOT_CMD = "/usr/bin/snapper create --type=%{snapshot_type} " \
-      "--cleanup-algorithm=number --print-number " \
+      "--cleanup-algorithm=number --print-number --userdata important=yes " \
       "--description=\"%{description}\""
 
     def self.run
