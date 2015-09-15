@@ -24,9 +24,13 @@ Yast.import "Mode"
 Yast.import "Sequencer"
 Yast.import "Update"
 Yast.import "Report"
+Yast.import "Pkg"
+Yast.import "Installation"
+Yast.import "PackageCallbacks"
 
 require "migration/finish_dialog"
 require "migration/restarter"
+require "migration/patches"
 
 module Migration
   # The goal of the class is to provide main single entry point to start
@@ -66,45 +70,54 @@ module Migration
     attr_accessor :pre_snapshot
 
     WORKFLOW_SEQUENCE = {
-      "ws_start"             => "start",
-      "start"                => {
-        start:   "create_pre_snapshot",
-        restart: "migration_finish"
+      "ws_start"                => "start",
+      "start"                   => {
+        start:                   "create_pre_snapshot",
+        restart_after_update:    "online_update",
+        restart_after_migration: "migration_finish"
       },
-      "create_pre_snapshot"  => {
+      "create_pre_snapshot"     => {
         next: "create_backup"
       },
-      "create_backup"        => {
-        next: "repositories"
+      "create_backup"           => {
+        next: "online_update"
       },
-      "repositories"         => {
+      "online_update"           => {
+        abort:   "restore",
+        restart: "restart_after_update",
+        next:    "repositories"
+      },
+      "restart_after_update"    => {
+        restart:  :restart
+      },
+      "repositories"            => {
         abort: "restore",
         next:  "proposals"
       },
-      "proposals"            => {
+      "proposals"               => {
         abort: "restore",
-        next:  "perform_update"
+        next:  "perform_migration"
       },
-      "perform_update"       => {
+      "perform_migration"       => {
         abort: :abort,
-        next:  "restart_yast"
+        next:  "restart_after_migration"
       },
-      "restore"              => {
+      "restore"                 => {
         abort: :abort
       },
-      "restart_yast"         => {
-        next:  :next
+      "restart_after_migration" => {
+        restart:  :restart
       },
       # note: the steps after the YaST restart use the new code from
       # the updated (migrated) yast2-migration package!!
-      "migration_finish"     => {
+      "migration_finish"        => {
         abort: :abort,
         next:  "create_post_snapshot"
       },
-      "create_post_snapshot" => {
+      "create_post_snapshot"    => {
         next: "finish_dialog"
       },
-      "finish_dialog"        => {
+      "finish_dialog"           => {
         abort: :abort,
         next:  :next
       }
@@ -112,19 +125,21 @@ module Migration
 
     def aliases
       {
-        "start"                => ->() { start },
-        "create_pre_snapshot"  => ->() { create_pre_snapshot },
-        "create_backup"        => ->() { create_backup },
-        "restore"              => ->() { restore_state },
-        "perform_update"       => ->() { perform_update },
-        "proposals"            => ->() { proposals },
-        "repositories"         => ->() { repositories },
-        "restart_yast"         => ->() { restart_yast },
+        "start"                   => ->() { start },
+        "create_pre_snapshot"     => ->() { create_pre_snapshot },
+        "create_backup"           => ->() { create_backup },
+        "online_update"           => ->() { online_update },
+        "restart_after_update"    => ->() { restart_yast(:restart_after_update) },
+        "restore"                 => ->() { restore_state },
+        "perform_migration"       => ->() { perform_migration },
+        "proposals"               => ->() { proposals },
+        "repositories"            => ->() { repositories },
+        "restart_after_migration" => ->() { restart_yast(:restart_after_migration) },
         # note: the steps after the YaST restart use the new code from
         # the updated (migrated) yast2-migration package!!
-        "migration_finish"     => ->() { migration_finish },
-        "create_post_snapshot" => ->() { create_post_snapshot },
-        "finish_dialog"        => ->() { finish_dialog }
+        "migration_finish"        => ->() { migration_finish },
+        "create_post_snapshot"    => ->() { create_post_snapshot },
+        "finish_dialog"           => ->() { finish_dialog }
       }
     end
 
@@ -142,6 +157,25 @@ module Migration
       :next
     end
 
+    def online_update
+      return :abort unless init_pkg_mgmt
+
+      patches = Patches.new
+      return :next unless patches.available?
+
+      # TRANSLATORS: popup question, confirm installing the available updates now
+      question = _("There are some online updates available to installation,\n" \
+          "it is recommended to install all updates before proceeding.\n\n" \
+          "Would you like to install the updates now?")
+      return :next unless Yast::Popup.YesNo(question)
+
+      ui = patches.install
+      # user canceled installing patches, continue without them...
+      return :next if ui == :cancel || ui == :abort
+
+      :restart
+    end
+
     def restore_state
       Yast::Update.restore_backup
 
@@ -156,7 +190,7 @@ module Migration
       Yast::WFM.CallFunction("migration_proposals", [{ "hide_export" => true }])
     end
 
-    def perform_update
+    def perform_migration
       # disable the default snapshots created by the zypp plugin
       ENV["DISABLE_SNAPPER_ZYPP_PLUGIN"] = "1"
 
@@ -250,17 +284,35 @@ module Migration
       # reload the stored snapshot id (from the previous run)
       if Restarter.instance.data.is_a?(Hash)
         self.pre_snapshot = Restarter.instance.data[:pre_snapshot]
+        step = Restarter.instance.data[:step]
+        return step if step
       end
 
-      :restart
+      log.warn "No saved step found, starting from the beginning"
+      :start
     end
 
     # schedule YaST restart
-    # return [Symbol] workflow symbol (always :next)
-    def restart_yast
+    # @param [String] step current step in the workflow
+    # @return [Symbol] workflow symbol (always :restart)
+    def restart_yast(step)
       # save the snapshot for later (after restart)
-      Restarter.instance.restart_yast(pre_snapshot: pre_snapshot)
-      :next
+      Restarter.instance.restart_yast(pre_snapshot: pre_snapshot, step: step)
+      :restart
+    end
+
+    def init_pkg_mgmt
+      # display progress when refreshing repositories
+      Yast::PackageCallbacks.InitPackageCallbacks
+
+      ret = Yast::Pkg.TargetInitialize(Yast::Installation.destdir) &&
+        Yast::Pkg.TargetLoad &&
+        Yast::Pkg.SourceRestore &&
+        Yast::Pkg.SourceLoad
+
+      Yast::Report.Error(Yast::Pkg.LastError) unless ret
+
+      ret
     end
   end
 end

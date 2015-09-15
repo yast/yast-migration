@@ -52,11 +52,16 @@ describe Migration::MainWorkflow do
       allow(Yast::Report).to receive(:Error).with(/Failed to create a filesystem snapshot/)
 
       allow_any_instance_of(Migration::Restarter).to receive(:restart_yast)
+      allow_any_instance_of(Migration::Patches).to receive(:available?).and_return(false)
 
       allow_any_instance_of(Migration::FinishDialog).to receive(:run).and_return(:next)
       allow_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(false)
 
       allow(ENV).to receive(:[]=).with("DISABLE_SNAPPER_ZYPP_PLUGIN", anything)
+      allow(Yast::Pkg).to receive(:TargetInitialize).and_return(true)
+      allow(Yast::Pkg).to receive(:TargetLoad).and_return(true)
+      allow(Yast::Pkg).to receive(:SourceRestore).and_return(true)
+      allow(Yast::Pkg).to receive(:SourceLoad).and_return(true)
     end
 
     it "pass workflow sequence to Yast sequencer" do
@@ -65,8 +70,8 @@ describe Migration::MainWorkflow do
       ::Migration::MainWorkflow.run
     end
 
-    it "returns :next if clicking next" do
-      expect(::Migration::MainWorkflow.run).to eq :next
+    it "returns :restart if clicking next" do
+      expect(::Migration::MainWorkflow.run).to eq :restart
     end
 
     it "restores repositories when clicking on Cancel" do
@@ -85,14 +90,15 @@ describe Migration::MainWorkflow do
       mock_client("inst_rpmcopy", :next).ordered
 
       expect_any_instance_of(Migration::Restarter).to receive(:restart_yast)
-        .with(pre_snapshot: 146)
+        .with(pre_snapshot: 146, step: :restart_after_migration)
 
-      expect(subject.run).to eq :next
+      expect(subject.run).to eq :restart
     end
 
     it "creates a post snapshot aftert YaST restart" do
       allow_any_instance_of(Migration::Restarter).to receive(:restarted).and_return(true)
-      allow_any_instance_of(Migration::Restarter).to receive(:data).and_return(pre_snapshot: 146)
+      allow_any_instance_of(Migration::Restarter).to receive(:data)
+        .and_return(pre_snapshot: 146, step: :restart_after_migration)
 
       expect(Yast::SCR).to receive(:Execute).with(bash_path,
         /snapper create .*--type=post .*--pre-number=146/).and_return(cmd_success)
@@ -100,13 +106,34 @@ describe Migration::MainWorkflow do
       expect(subject.run).to eq :next
     end
 
+    it "installs the patches and restarts if any update stack patch is available" do
+      allow(Yast::SCR).to receive(:Execute).with(bash_path, /snapper create .*--type=pre/)
+        .and_return(snapshot_created)
+      expect_any_instance_of(Migration::Patches).to receive(:available?).and_return(true)
+      expect_any_instance_of(Migration::Patches).to receive(:install)
+      # user confirmed patch installation
+      expect(Yast::Popup).to receive(:YesNo).and_return(true)
+      expect_any_instance_of(Migration::Restarter).to receive(:restart_yast)
+        .with(pre_snapshot: 146, step: :restart_after_update)
+
+      expect(subject.run).to eq :restart
+    end
+
     it "reboots the system at the end when requested" do
-      allow_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(true)
+      expect_any_instance_of(Migration::FinishDialog).to receive(:reboot).and_return(true)
       allow_any_instance_of(Migration::Restarter).to receive(:restarted).and_return(true)
-      allow_any_instance_of(Migration::Restarter).to receive(:reboot)
+      allow_any_instance_of(Migration::Restarter).to receive(:data)
+        .and_return(pre_snapshot: 146, step: :restart_after_migration)
+      expect_any_instance_of(Migration::Restarter).to receive(:reboot)
 
       expect(::Migration::MainWorkflow.run).to eq :next
     end
 
+    it "starts from scratch if restart data are not valid" do
+      expect_any_instance_of(Migration::Restarter).to receive(:restarted).and_return(true)
+      expect_any_instance_of(Migration::Restarter).to receive(:data).and_return(nil)
+
+      expect(::Migration::MainWorkflow.run).to eq :restart
+    end
   end
 end
