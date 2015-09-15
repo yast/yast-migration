@@ -21,12 +21,13 @@
 require_relative "test_helper"
 
 require "migration/restarter"
+require "yaml"
 
 describe Migration::Restarter do
   # create a new anonymous instance for each test to avoid test dependencies
   # see http://stackoverflow.com/a/26172556/633234
   subject { Class.new(Migration::Restarter).instance }
-  let(:nil_yaml) { "--- \n...\n" }
+  let(:nil_yaml) { nil.to_yaml }
 
   before do
     allow(File).to receive(:exist?).with(Migration::Restarter::MIGRATION_RESTART)

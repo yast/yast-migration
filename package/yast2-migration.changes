@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Sep 16 12:18:15 UTC 2015 - lslezak@suse.cz
+
+- install package management patches at the beginning to ensure
+  the latest migration packages are used (bsc#945032)
+
+-------------------------------------------------------------------
 Mon Sep 14 07:37:39 UTC 2015 - lslezak@suse.cz
 
 - add "important" flag to the snapshots created by the migration
