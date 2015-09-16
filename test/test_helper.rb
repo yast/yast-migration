@@ -43,6 +43,14 @@ if ENV["COVERAGE"]
   end
 end
 
+# configure RSpec
+RSpec.configure do |config|
+  config.mock_with :rspec do |c|
+    # https://relishapp.com/rspec/rspec-mocks/v/3-0/docs/verifying-doubles/partial-doubles
+    c.verify_partial_doubles = true
+  end
+end
+
 def data_file(file)
   File.expand_path(File.join("../data", file), __FILE__)
 end
