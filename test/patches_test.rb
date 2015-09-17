@@ -34,6 +34,12 @@ describe Migration::Patches do
     allow(Yast::Pkg).to receive(:ResolvablePreselectPatches).and_return(0)
   end
 
+  describe "#initialize" do
+    it "raises ArgumentError exception when an unknown patch type" do
+      expect { Migration::Patches.new(:foo) }.to raise_error(ArgumentError)
+    end
+  end
+
   describe "#available?" do
     it "ignores recommended packages" do
       expect(Yast::Pkg).to receive(:SetSolverFlags).with("ignoreAlreadyRecommended" => true,
@@ -41,20 +47,23 @@ describe Migration::Patches do
       subject.available?
     end
 
-    it "returns true if at least one patch is available" do
-      expect(Yast::Pkg).to receive(:ResolvableCountPatches).and_return(42)
+    it "returns true if at least one pkg management patch is available" do
+      expect(Yast::Pkg).to receive(:ResolvableCountPatches).with(:affects_pkg_manager)
+        .and_return(42)
       expect(subject.available?).to eq(true)
     end
 
-    it "returns false if no patch is available" do
-      expect(Yast::Pkg).to receive(:ResolvableCountPatches).and_return(0)
+    it "returns false if no pkg management patch is available" do
+      expect(Yast::Pkg).to receive(:ResolvableCountPatches).with(:affects_pkg_manager)
+        .and_return(0)
       expect(subject.available?).to eq(false)
     end
   end
 
   describe "#install" do
     before do
-      expect(Yast::Pkg).to receive(:ResolvablePreselectPatches).and_return(42)
+      expect(Yast::Pkg).to receive(:ResolvablePreselectPatches).with(:affects_pkg_manager)
+        .and_return(42)
     end
 
     it "displays the patches to confirm the patch installation" do

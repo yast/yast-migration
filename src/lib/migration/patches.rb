@@ -40,8 +40,14 @@ module Migration
     attr_reader :patch_type
 
     # constructor
-    # @param [Symbol] patch_type requested patch type to use
+    # @param [Symbol] patch_type requested patch type to use, one of the KIND_* constant
     def initialize(patch_type = KIND_SW_MGMT)
+      accepted_types = [KIND_ALL, KIND_SW_MGMT, KIND_INTERACTIVE, KIND_REBOOT, KIND_RELOGIN]
+
+      if !accepted_types.include?(patch_type)
+        raise ArgumentError, "Unknown patch type: #{patch_type}"
+      end
+
       @patch_type = patch_type
     end
 
