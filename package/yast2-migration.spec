@@ -39,8 +39,8 @@ Requires:	yast2
 Requires:	yast2-packager
 Requires:	yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
-# new registration with migration support
-Requires:       yast2-registration >= 3.1.129.5
+# new rollback client
+Requires:       yast2-registration >= 3.1.129.8
 Requires:       yast2-update
 
 BuildArch: noarch
