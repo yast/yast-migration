@@ -83,7 +83,7 @@ module Migration
         next: "online_update"
       },
       "online_update"           => {
-        abort:   "restore",
+        abort:   :abort,
         restart: "restart_after_update",
         next:    "repositories"
       },
@@ -91,19 +91,21 @@ module Migration
         restart:  :restart
       },
       "repositories"            => {
-        abort: "restore",
-        next:  "proposals"
+        abort:    :abort,
+        rollback: "rollback",
+        next:     "proposals"
       },
       "proposals"               => {
-        abort: "restore",
+        abort: "rollback",
         next:  "perform_migration"
+      },
+      "rollback"                => {
+        abort: :abort,
+        next:  :next
       },
       "perform_migration"       => {
         abort: :abort,
         next:  "restart_after_migration"
-      },
-      "restore"                 => {
-        abort: :abort
       },
       "restart_after_migration" => {
         restart:  :restart
@@ -130,7 +132,7 @@ module Migration
         "create_backup"           => ->() { create_backup },
         "online_update"           => ->() { online_update },
         "restart_after_update"    => ->() { restart_yast(:restart_after_update) },
-        "restore"                 => ->() { restore_state },
+        "rollback"                => ->() { rollback },
         "perform_migration"       => ->() { perform_migration },
         "proposals"               => ->() { proposals },
         "repositories"            => ->() { repositories },
@@ -176,9 +178,8 @@ module Migration
       :restart
     end
 
-    def restore_state
-      Yast::Update.restore_backup
-
+    def rollback
+      Yast::WFM.CallFunction("registration_sync")
       :abort
     end
 

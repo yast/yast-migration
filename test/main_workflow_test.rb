@@ -40,10 +40,10 @@ describe Migration::MainWorkflow do
       mock_client("inst_kickoff", :next)
       mock_client("inst_rpmcopy", :next)
       mock_client("migration_finish", :next)
+      mock_client("registration_sync", :next)
 
       allow(Yast::Update).to receive(:clean_backup)
       allow(Yast::Update).to receive(:create_backup)
-      allow(Yast::Update).to receive(:restore_backup)
 
       allow(Yast::SCR).to receive(:Execute).with(bash_path, /snapper .*list-configs/)
         .and_return(cmd_success)
@@ -74,12 +74,23 @@ describe Migration::MainWorkflow do
       expect(::Migration::MainWorkflow.run).to eq :restart
     end
 
-    it "restores repositories when clicking on Cancel" do
-      expect(Yast::Update).to receive(:clean_backup)
-      expect(Yast::Update).to receive(:create_backup)
-      expect(Yast::Update).to receive(:restore_backup)
+    it "aborts without rollback when the migration selection is aborted" do
+      mock_client(["migration_repos", [{ "enable_back" => false }]], :abort)
+      expect(Yast::WFM).to_not receive(:CallFunction).with("registration_sync")
 
+      expect(::Migration::MainWorkflow.run).to eq :abort
+    end
+
+    it "rolls back registration when the migration selection abort returns rollback request" do
+      mock_client(["migration_repos", [{ "enable_back" => false }]], :rollback)
+      expect(Yast::WFM).to receive(:CallFunction).with("registration_sync")
+
+      expect(::Migration::MainWorkflow.run).to eq :abort
+    end
+
+    it "rolls back the registration after registering migration products" do
       mock_client(["migration_proposals", [{ "hide_export" => true }]], :abort)
+      expect(Yast::WFM).to receive(:CallFunction).with("registration_sync")
 
       expect(::Migration::MainWorkflow.run).to eq :abort
     end
