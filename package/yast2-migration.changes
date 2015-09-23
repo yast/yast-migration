@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Sep 22 17:18:52 UTC 2015 - lslezak@suse.cz
+
+- rollback registration when migration is aborted after registering
+  the migration products (FATE#315161)
+- 3.1.10
+
+-------------------------------------------------------------------
 Wed Sep 16 12:18:15 UTC 2015 - lslezak@suse.cz
 
 - install package management patches at the beginning to ensure
