@@ -3,6 +3,7 @@ Thu Sep 24 19:12:38 UTC 2015 - lslezak@suse.cz
 
 - do not display the "success" dialog when the package installation
   is aborted
+- 3.1.11
 
 -------------------------------------------------------------------
 Tue Sep 22 17:18:52 UTC 2015 - lslezak@suse.cz
