@@ -200,9 +200,9 @@ module Migration
       # this client is located in the yast2-packager package
       Yast::WFM.CallFunction("inst_kickoff")
       # this client is located in the yast2-packager package
-      Yast::WFM.CallFunction("inst_rpmcopy")
-
-      :next
+      ret = Yast::WFM.CallFunction("inst_rpmcopy")
+      log.info "inst_rpmcopy result: #{ret.inspect}"
+      ret
     end
 
     def create_pre_snapshot
