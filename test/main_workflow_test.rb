@@ -81,6 +81,13 @@ describe Migration::MainWorkflow do
       expect(::Migration::MainWorkflow.run).to eq :abort
     end
 
+    it "aborts without rollback when the package installation is aborted" do
+      mock_client("inst_rpmcopy", :abort)
+      expect(Yast::WFM).to_not receive(:CallFunction).with("registration_sync")
+
+      expect(::Migration::MainWorkflow.run).to eq :abort
+    end
+
     it "rolls back registration when the migration selection abort returns rollback request" do
       mock_client(["migration_repos", [{ "enable_back" => false }]], :rollback)
       expect(Yast::WFM).to receive(:CallFunction).with("registration_sync")
