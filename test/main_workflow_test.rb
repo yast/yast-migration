@@ -83,6 +83,7 @@ describe Migration::MainWorkflow do
 
     it "aborts without rollback when the package installation is aborted" do
       mock_client("inst_rpmcopy", :abort)
+      expect(Yast::Report).to receive(:Error).with(/migration to the new service pack has failed/)
       expect(Yast::WFM).to_not receive(:CallFunction).with("registration_sync")
 
       expect(::Migration::MainWorkflow.run).to eq :abort
