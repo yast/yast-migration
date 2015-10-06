@@ -202,7 +202,23 @@ module Migration
       # this client is located in the yast2-packager package
       ret = Yast::WFM.CallFunction("inst_rpmcopy")
       log.info "inst_rpmcopy result: #{ret.inspect}"
+
+      display_abort_message if ret == :abort || ret == :cancel
+
       ret
+    end
+
+    def display_abort_message
+      Yast::Report.Error(
+        # TRANSLATORS: an error message, the migration to a new service pack failed
+        # or was aborted, the system is in partly migrated state and should be restored
+        # from a snapshot or backup
+        _("The migration to the new service pack has failed. The system is most\n" \
+            "likely in an inconsistent state.\n" \
+            "\n" \
+            "We strongly recommend to rollback to a snapshot created before the\n" \
+            "migration was started (via selecting the snapshot in the boot menu\n" \
+            "if you use snapper) or restore the system from a backup."))
     end
 
     def create_pre_snapshot
