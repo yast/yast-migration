@@ -3,6 +3,7 @@ Tue Oct  6 06:58:08 UTC 2015 - lslezak@suse.cz
 
 - display a hint to manually rollback the system when migration
   fails or is aborted during package installation (FATE#315161)
+- 3.1.12
 
 -------------------------------------------------------------------
 Thu Sep 24 19:12:38 UTC 2015 - lslezak@suse.cz
