@@ -32,4 +32,4 @@ ensure
   Yast::Wizard.CloseDialog
 end
 
-return ret
+ret
