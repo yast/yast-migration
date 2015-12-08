@@ -44,6 +44,7 @@ Requires:       yast2-registration >= 3.1.153
 # need recent enough installation for working proposal runner
 Requires:       yast2-installation >= 3.1.146
 Requires:       yast2-update
+Supplements:    yast2-registration
 
 BuildArch: noarch
 
