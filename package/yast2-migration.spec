@@ -46,7 +46,6 @@ Requires:       yast2-installation >= 3.1.146
 Requires:       yast2-update
 Supplements:    yast2-registration
 
-
 BuildArch: noarch
 
 Summary:	YaST2 - Online migration
