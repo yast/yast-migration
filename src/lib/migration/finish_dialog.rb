@@ -77,7 +77,7 @@ module Migration
       end
     end
 
-    private
+  private
 
     def help
       # TRANSLATORS: a short help text (the details are directly in the dialog)

@@ -87,7 +87,7 @@ module Migration
       }
     end
 
-    private
+  private
 
     # check the current products for possible issues, add product warnings
     # to the proposal summary

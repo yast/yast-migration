@@ -64,7 +64,7 @@ module Migration
       end
     end
 
-    private
+  private
 
     # remeber the "pre" snapshot id (needed for the "post" snapshot)
     attr_accessor :pre_snapshot
