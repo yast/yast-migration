@@ -88,7 +88,7 @@ module Migration
         next:    "repositories"
       },
       "restart_after_update"    => {
-        restart:  :restart
+        restart: :restart
       },
       "repositories"            => {
         abort:    :abort,
@@ -108,7 +108,7 @@ module Migration
         next:  "restart_after_migration"
       },
       "restart_after_migration" => {
-        restart:  :restart
+        restart: :restart
       },
       # note: the steps after the YaST restart use the new code from
       # the updated (migrated) yast2-migration package!!
