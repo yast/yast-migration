@@ -218,7 +218,8 @@ module Migration
             "\n" \
             "We strongly recommend to rollback to a snapshot created before the\n" \
             "migration was started (via selecting the snapshot in the boot menu\n" \
-            "if you use snapper) or restore the system from a backup."))
+            "if you use snapper) or restore the system from a backup.")
+      )
     end
 
     def create_pre_snapshot
