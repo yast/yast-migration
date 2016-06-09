@@ -41,11 +41,11 @@ module Migration
     include Yast::I18n
 
     FIND_CONFIG_CMD = "/usr/bin/snapper --no-dbus list-configs | " \
-      "grep \"^root \" >/dev/null"
+      "grep \"^root \" >/dev/null".freeze
 
     CREATE_SNAPSHOT_CMD = "/usr/bin/snapper create --type=%{snapshot_type} " \
       "--cleanup-algorithm=number --print-number --userdata important=yes " \
-      "--description=\"%{description}\""
+      "--description=\"%{description}\"".freeze
 
     def self.run
       workflow = new
@@ -123,7 +123,7 @@ module Migration
         abort: :abort,
         next:  :next
       }
-    }
+    }.freeze
 
     def aliases
       {
