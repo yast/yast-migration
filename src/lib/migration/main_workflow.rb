@@ -41,11 +41,11 @@ module Migration
     include Yast::I18n
 
     FIND_CONFIG_CMD = "/usr/bin/snapper --no-dbus list-configs | " \
-      "grep \"^root \" >/dev/null"
+      "grep \"^root \" >/dev/null".freeze
 
     CREATE_SNAPSHOT_CMD = "/usr/bin/snapper create --type=%{snapshot_type} " \
       "--cleanup-algorithm=number --print-number --userdata important=yes " \
-      "--description=\"%{description}\""
+      "--description=\"%{description}\"".freeze
 
     def self.run
       workflow = new
@@ -88,7 +88,7 @@ module Migration
         next:    "repositories"
       },
       "restart_after_update"    => {
-        restart:  :restart
+        restart: :restart
       },
       "repositories"            => {
         abort:    :abort,
@@ -108,7 +108,7 @@ module Migration
         next:  "restart_after_migration"
       },
       "restart_after_migration" => {
-        restart:  :restart
+        restart: :restart
       },
       # note: the steps after the YaST restart use the new code from
       # the updated (migrated) yast2-migration package!!
@@ -123,7 +123,7 @@ module Migration
         abort: :abort,
         next:  :next
       }
-    }
+    }.freeze
 
     def aliases
       {
@@ -218,7 +218,8 @@ module Migration
             "\n" \
             "We strongly recommend to rollback to a snapshot created before the\n" \
             "migration was started (via selecting the snapshot in the boot menu\n" \
-            "if you use snapper) or restore the system from a backup."))
+            "if you use snapper) or restore the system from a backup.")
+      )
     end
 
     def create_pre_snapshot

@@ -23,7 +23,7 @@ module Migration
     include Yast::I18n
 
     # ID prefix used in the proposal links
-    LINK_PREFIX = "migration--disable_repository_"
+    LINK_PREFIX = "migration--disable_repository_".freeze
 
     def initialize
       Yast.import "Pkg"
@@ -173,7 +173,7 @@ module Migration
     def disable_repo(link)
       log.info "Activated link: #{link}"
 
-      link.match(/^#{LINK_PREFIX}(\d+)/)
+      link =~ /^#{LINK_PREFIX}(\d+)/
       repo = Regexp.last_match(1).to_i
 
       log.info "Disabling repository #{repo}"

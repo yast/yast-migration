@@ -28,10 +28,10 @@ module Migration
     include Yast::Logger
     include Yast::I18n
 
-    PROPOSAL_NAMES = ["migration_proposal", "packages_proposal"]
+    PROPOSAL_NAMES = ["migration_proposal", "packages_proposal"].freeze
     PROPOSAL_PROPERTIES = {
       "enable_skip" => "false"
-    }
+    }.freeze
     MODULES_ORDER = PROPOSAL_NAMES
 
     def initialize(_unused_mode)
