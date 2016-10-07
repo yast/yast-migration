@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Fri Oct  7 10:30:08 UTC 2016 - igonzalezsosa@suse.com
+
+- fixed "reboot" button after migration is finished
+  (require yast2 >= 3.1.108.7 which provides the reboot
+  functionality)
+- 3.1.0.13
+
+-------------------------------------------------------------------
 Thu Oct  8 13:26:01 UTC 2015 - lslezak@suse.cz
 
 - fixed crash in the migration proposal (do not use "return"

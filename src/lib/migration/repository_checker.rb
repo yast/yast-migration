@@ -48,7 +48,7 @@ module Migration
       old_repos
     end
 
-    private
+  private
 
     attr_accessor :products
 

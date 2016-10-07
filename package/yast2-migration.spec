@@ -17,7 +17,7 @@
 
 
 Name:           yast2-migration
-Version:        3.1.0.12
+Version:        3.1.0.13
 Release:        0
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -26,8 +26,8 @@ Source0:        %{name}-%{version}.tar.bz2
 Group:	        System/YaST
 License:        GPL-2.0
 Url:            http://github.com/yast/yast-migration
-BuildRequires:	yast2-buildtools
-BuildRequires:	yast2
+BuildRequires:  yast2-buildtools
+BuildRequires:  yast2
 BuildRequires:  rubygem(rspec)
 BuildRequires:  rubygem(yast-rake)
 BuildRequires:  yast2-packager
@@ -35,9 +35,10 @@ BuildRequires:  yast2-ruby-bindings
 BuildRequires:  yast2-installation
 BuildRequires:  yast2-update
 # needed in build for testing
-Requires:	yast2
-Requires:	yast2-packager
-Requires:	yast2-pkg-bindings
+# yast2 3.1.108.7 handles the reboot flag
+Requires:       yast2 >= 3.1.108.7
+Requires:       yast2-packager
+Requires:       yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
 # new rollback client
 Requires:       yast2-registration >= 3.1.129.8

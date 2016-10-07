@@ -83,7 +83,7 @@ module Migration
       end
     end
 
-    private
+  private
 
     # preselect the available patches
     def preselect
