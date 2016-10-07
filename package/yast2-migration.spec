@@ -43,6 +43,7 @@ Requires:       yast2-ruby-bindings
 # new rollback client
 Requires:       yast2-registration >= 3.1.129.8
 Requires:       yast2-update
+Supplements:    yast2-registration
 
 BuildArch: noarch
 
