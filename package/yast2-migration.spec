@@ -35,6 +35,7 @@ BuildRequires:  yast2-ruby-bindings
 BuildRequires:  yast2-installation
 BuildRequires:  yast2-update
 # needed in build for testing
+# yast2 3.1.108.7 handles the reboot flag
 Requires:       yast2 >= 3.1.108.7
 Requires:       yast2-packager
 Requires:       yast2-pkg-bindings
