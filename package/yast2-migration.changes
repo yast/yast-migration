@@ -11,13 +11,13 @@ Thu Nov 26 13:17:47 UTC 2015 - stephan.barth@suse.com
 
 - Added Supplements for yast2-registration to ensure automatic
   installation
-- 3.1.0.12
 
 -------------------------------------------------------------------
 Thu Oct  8 13:26:01 UTC 2015 - lslezak@suse.cz
 
 - fixed crash in the migration proposal (do not use "return"
   for returning the client result value) (bsc#949484)
+- 3.1.0.12
 
 -------------------------------------------------------------------
 Tue Oct  6 06:58:08 UTC 2015 - lslezak@suse.cz
