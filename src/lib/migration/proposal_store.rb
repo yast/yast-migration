@@ -57,7 +57,7 @@ module Migration
       MODULES_ORDER
     end
 
-    private
+  private
 
     def global_help
       _(

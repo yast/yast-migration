@@ -95,7 +95,7 @@ module Installation
       end
     end
 
-    protected
+  protected
 
     # Abstract method to create proposal suggestion for installation
     #
