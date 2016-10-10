@@ -2,6 +2,8 @@
 Thu Nov 26 13:17:47 UTC 2015 - stephan.barth@suse.com
 
 - Added Supplements for yast2-registration to ensure automatic installation
+  (bsc#982150)
+- 3.1.13.1
 
 -------------------------------------------------------------------
 Thu Oct  8 13:26:01 UTC 2015 - lslezak@suse.cz
