@@ -17,7 +17,7 @@
 
 
 Name:           yast2-migration
-Version:        3.1.13.1
+Version:        3.2.0
 Release:        0
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
