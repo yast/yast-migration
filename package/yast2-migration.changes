@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Tue Jun  6 11:25:21 UTC 2017 - mfilka@suse.com
+
+- bnc#1040118
+  - moved YCC laucher from "System" into "Software" group even in
+    GTK
+- 3.2.0
+
+-------------------------------------------------------------------
 Thu Nov 26 13:17:47 UTC 2015 - stephan.barth@suse.com
 
 - Added Supplements for yast2-registration to ensure automatic installation
