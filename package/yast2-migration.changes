@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Dec  7 15:23:31 UTC 2017 - igonzalezsosa@suse.com
+
+- Bump version to follow the new versioning guidelines
+  (related to bsc#1071757).
+- 4.0.0 
+
+-------------------------------------------------------------------
 Tue Jun  6 11:25:21 UTC 2017 - mfilka@suse.com
 
 - bnc#1040118
