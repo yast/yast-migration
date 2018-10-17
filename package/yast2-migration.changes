@@ -1,7 +1,8 @@
 -------------------------------------------------------------------
 Wed Oct 17 10:34:59 CEST 2018 - schubi@suse.de
 
-- Added %license to spec file.
+- Added %license to spec file. Needed to build
+  fix for bsc#1071757 again.
 - 4.0.1
 
 -------------------------------------------------------------------
