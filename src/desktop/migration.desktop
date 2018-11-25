@@ -11,7 +11,7 @@ X-SuSE-YaST-RootOnly=true
 X-SuSE-YaST-Geometry=
 X-SuSE-YaST-SortKey=
 
-Icon=yast-sw_single
+Icon=yast-migration
 Exec=xdg-su -c "/sbin/yast2 migration"
 
 Name=Online Migration
