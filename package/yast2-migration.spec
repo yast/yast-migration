@@ -69,7 +69,7 @@ rake install DESTDIR="%{buildroot}"
 %{yast_clientdir}/*.rb
 %{yast_libdir}/migration
 %{yast_desktopdir}/*.desktop
-%{_datadir}/icons/*
+%{yast_icondir}
 
 %dir %{yast_docdir}
 %license COPYING
