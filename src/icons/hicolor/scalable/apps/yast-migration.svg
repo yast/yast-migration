@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" version="1.1" viewBox="0 0 128 128.00001" xmlns="http://www.w3.org/2000/svg">
+<g transform="matrix(2,0,0,2,0,36)">
+<path d="m8-6-6 10 6 2z" fill="#cdab8f"/>
+<path d="m56-6 6 10-6 2z" fill="#cdab8f"/>
+<rect x="8" y="-6" width="48" height="44" ry="0" fill="#cdab8f"/>
+<rect x="8" y="-6" width="48" height="40" ry="0" fill="#dec7b4"/>
+<rect x="22" y="-6" width="34" height="40" fill="#73ba25"/>
+<rect x="22" y="34" width="34" height="4" fill="#54881b"/>
+<path d="m26 24v14h12v-14l-6 4z" fill="#63452c" opacity=".2"/>
+<path d="m8-6-2 16h26v-16z" fill="#dec7b4"/>
+<path d="m22 10h36l-2-16h-34z" fill="#73ba25"/>
+<rect x="6" y="10" width="26" height="2" fill="#cdab8f"/>
+<rect x="22" y="10" width="36" height="2" fill="#54881b"/>
+</g>
+<path d="m76 32v12c-22.091 0-40 17.909-40 40v8h16v-8c0-13.255 10.745-24 24-24v12l20-20v-4z" fill="#1a5fb4"/>
+<path d="m76 28v12c-22.091 0-40 17.909-40 40v8h16v-8c0-13.255 10.745-24 24-24v12l20-20z" fill="#3584e4"/>
+</svg>

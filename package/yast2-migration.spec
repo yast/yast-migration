@@ -17,7 +17,7 @@
 
 
 Name:           yast2-migration
-Version:        4.0.1
+Version:        4.1.0
 Release:        0
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -69,6 +69,7 @@ rake install DESTDIR="%{buildroot}"
 %{yast_clientdir}/*.rb
 %{yast_libdir}/migration
 %{yast_desktopdir}/*.desktop
+%{yast_icondir}
 
 %dir %{yast_docdir}
 %license COPYING
