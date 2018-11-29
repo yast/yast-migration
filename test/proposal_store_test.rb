@@ -72,12 +72,6 @@ module Yast
       end
     end
 
-    describe ".icon" do
-      it "returns 'yast-software'" do
-        expect(subject.icon).to eq "yast-software"
-      end
-    end
-
     describe ".tabs?" do
       it "returns false" do
         expect(subject.tabs?).to eq false
