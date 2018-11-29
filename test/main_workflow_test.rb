@@ -105,8 +105,8 @@ describe Migration::MainWorkflow do
 
     it "creates a pre snapshot before starting the migration" do
       expect(Yast::SCR).to receive(:Execute).with(bash_path, /snapper create .*--type=pre/)
-        .and_return(snapshot_created).ordered
-      mock_client("inst_rpmcopy", :next).ordered
+        .and_return(snapshot_created)
+      mock_client("inst_rpmcopy", :next)
 
       expect_any_instance_of(Migration::Restarter).to receive(:restart_yast)
         .with(pre_snapshot: 146, step: :restart_after_migration)
