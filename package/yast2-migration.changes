@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Nov 29 09:15:35 UTC 2018 - lslezak@suse.cz
+
+- Build fix, update unit tests related to the icon handling
+  (boo#1109310)
+- 4.1.1
+
+-------------------------------------------------------------------
 Sun Nov 25 18:07:13 UTC 2018 - Stasiek Michalski <hellcp@mailbox.org>
 
 - Provide icon with module (boo#1109310)
