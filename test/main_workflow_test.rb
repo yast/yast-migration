@@ -62,6 +62,8 @@ describe Migration::MainWorkflow do
       allow(Yast::Pkg).to receive(:TargetLoad).and_return(true)
       allow(Yast::Pkg).to receive(:SourceRestore).and_return(true)
       allow(Yast::Pkg).to receive(:SourceLoad).and_return(true)
+      allow(Yast::OSRelease).to receive(:id).and_return("sles")
+      allow(File).to receive(:delete).with(Migration::MainWorkflow::VENDOR_FILE)
     end
 
     it "pass workflow sequence to Yast sequencer" do
@@ -153,6 +155,29 @@ describe Migration::MainWorkflow do
       expect_any_instance_of(Migration::Restarter).to receive(:data).and_return(nil)
 
       expect(::Migration::MainWorkflow.run).to eq :restart
+    end
+
+    context "in openSUSE Leap" do
+      before do
+        allow(Yast::OSRelease).to receive(:id).and_return("opensuse-leap")
+        allow(File).to receive(:write).with(Migration::MainWorkflow::VENDOR_FILE, anything)
+        allow(Yast::Pkg).to receive(:SourceGetCurrent).and_return([])
+        allow(Yast::Pkg).to receive(:SourceSetEnabled)
+      end
+
+      it "writes the vendor config file" do
+        expect(File).to receive(:write).with(Migration::MainWorkflow::VENDOR_FILE,
+          Migration::MainWorkflow::VENDOR_CONTENT)
+
+        ::Migration::MainWorkflow.run
+      end
+
+      it "disables all current repositories" do
+        expect(Yast::Pkg).to receive(:SourceGetCurrent).and_return([42])
+        expect(Yast::Pkg).to receive(:SourceSetEnabled).with(42, false)
+
+        ::Migration::MainWorkflow.run
+      end
     end
   end
 end

@@ -1,4 +1,14 @@
 -------------------------------------------------------------------
+Thu May 30 14:08:16 UTC 2019 - Ladislav Slezák <lslezak@suse.cz>
+
+- Fixes for the openSUSE Leap => SLES migration (jsc#SLE-7006)
+  - Enable the openSUSE => SUSE vendor change
+  - Disable all other repositories (esp. the default OSS and
+    non-OSS repositories) which could collide with the new SLES
+    repositories
+- 4.1.2
+
+-------------------------------------------------------------------
 Thu Nov 29 09:15:35 UTC 2018 - lslezak@suse.cz
 
 - Build fix, update unit tests related to the icon handling
