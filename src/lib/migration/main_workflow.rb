@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright (c) 2015 SUSE LLC, All Rights Reserved.
+# Copyright (c) 2015-2019 SUSE LLC, All Rights Reserved.
 #
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -26,6 +26,7 @@ Yast.import "Update"
 Yast.import "Report"
 Yast.import "Pkg"
 Yast.import "Installation"
+Yast.import "OSRelease"
 Yast.import "PackageCallbacks"
 
 require "migration/finish_dialog"
@@ -47,6 +48,14 @@ module Migration
       "--cleanup-algorithm=number --print-number --userdata important=yes " \
       "--description=\"%{description}\"".freeze
 
+    # a temporary vendor configuration file
+    VENDOR_FILE = "/etc/zypp/vendors.d/YaST_openSUSE_migration.conf".freeze
+
+    # content of the vendor configuation file,
+    # make the "openSUSE" and "SUSE" vendors equal, allow to change
+    # the vendor from "openSUSE" to "SUSE"
+    VENDOR_CONTENT = "[main]\nvendors=openSUSE,SUSE\n".freeze
+
     def self.run
       workflow = new
       workflow.run
@@ -60,13 +69,14 @@ module Migration
         Yast::Wizard.CreateDialog
         Yast::Sequencer.Run(aliases, WORKFLOW_SEQUENCE)
       ensure
+        vendor_cleanup
         Yast::Wizard.CloseDialog
       end
     end
 
   private
 
-    # remeber the "pre" snapshot id (needed for the "post" snapshot)
+    # remember the "pre" snapshot id (needed for the "post" snapshot)
     attr_accessor :pre_snapshot
 
     WORKFLOW_SEQUENCE = {
@@ -184,6 +194,7 @@ module Migration
     end
 
     def repositories
+      prepare_repos
       Yast::WFM.CallFunction("migration_repos", [{ "enable_back" => false }])
     end
 
@@ -319,7 +330,11 @@ module Migration
       :restart
     end
 
+    # Initialize the package manager (libzypp)
     def init_pkg_mgmt
+      # the vendor configuration file must be created *before* initializing libzypp
+      vendor_init
+
       # display progress when refreshing repositories
       Yast::PackageCallbacks.InitPackageCallbacks
 
@@ -331,6 +346,35 @@ module Migration
       Yast::Report.Error(Yast::Pkg.LastError) unless ret
 
       ret
+    end
+
+    # Enable the openSUSE => SUSE vendor change when migrating from
+    # an openSUSE distribution to SLE.
+    def vendor_init
+      File.write(VENDOR_FILE, VENDOR_CONTENT) if opensuse?
+    end
+
+    # Remove the vendor configuration file
+    def vendor_cleanup
+      File.delete(VENDOR_FILE) if File.exist?(VENDOR_FILE)
+    end
+
+    # Prepare the repositories for the online migration.
+    # This mainly activates some workarounds in the openSUSE => SLE migration
+    def prepare_repos
+      return unless opensuse?
+
+      # disable all enabled repositories, the migration only removes (upgrades)
+      # the repositories from the registration server (SCC), all other repositories
+      # (like the default OSS and non-OSS repos) would collide with the new SLES repos
+      Yast::Pkg.SourceGetCurrent(true).each { |r| Yast::Pkg.SourceSetEnabled(r, false) }
+    end
+
+    # Running in an openSUSE distribution?
+    #
+    # @return [Boolean] True if running in an openSUSE distribution, false otherwise
+    def opensuse?
+      Yast::OSRelease.id.match?(/opensuse/i)
     end
   end
 end
