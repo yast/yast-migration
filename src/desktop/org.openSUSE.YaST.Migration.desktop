@@ -14,6 +14,7 @@ X-SuSE-YaST-SortKey=
 Icon=yast-migration
 Exec=xdg-su -c "/sbin/yast2 migration"
 
-Name=Online Migration
+Name=YaST Online Migration
 GenericName=Online Migration
+Comment=Migration via the network
 StartupNotify=true
