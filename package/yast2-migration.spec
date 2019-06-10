@@ -12,22 +12,22 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
+# Please submit bugfixes or comments via https://bugs.opensuse.org/
 #
 
 
 Name:           yast2-migration
-Version:        4.1.2
+Version:        4.2.0
 Release:        0
+Summary:        YaST2 - Online migration
+Group:          System/YaST
+License:        GPL-2.0
+Url:            https://github.com/yast/yast-migration
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        %{name}-%{version}.tar.bz2
 
-Group:	        System/YaST
-License:        GPL-2.0
-Url:            http://github.com/yast/yast-migration
-BuildRequires:	yast2-buildtools
-BuildRequires:	yast2 >= 3.1.130
+BuildRequires:  yast2-buildtools >= 4.2.2
+BuildRequires:  yast2 >= 3.1.130
 BuildRequires:  rubygem(rspec)
 BuildRequires:  rubygem(yast-rake)
 BuildRequires:  yast2-packager
@@ -35,43 +35,43 @@ BuildRequires:  yast2-ruby-bindings
 # needed in build for testing
 BuildRequires:  yast2-installation >= 3.1.137
 BuildRequires:  yast2-update
-Requires:	yast2 >= 3.1.130
-Requires:	yast2-packager
-Requires:	yast2-pkg-bindings
+
+Requires:       yast2 >= 3.1.130
+Requires:       yast2-packager
+Requires:       yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
 # new rollback client
 Requires:       yast2-registration >= 3.1.153
 # need recent enough installation for working proposal runner
 Requires:       yast2-installation >= 3.1.146
 Requires:       yast2-update
+
 Supplements:    yast2-registration
 
 BuildArch: noarch
-
-Summary:	YaST2 - Online migration
 
 %description
 This package contains the YaST2 component for online migration.
 
 %prep
-%setup -n %{name}-%{version}
+%setup -q
 
 %check
-rake test:unit
+%yast_check
 
 %build
 
 %install
-rake install DESTDIR="%{buildroot}"
+%yast_install
+%yast_metainfo
 
 %files
-%defattr(-,root,root)
-%{yast_clientdir}/*.rb
-%{yast_libdir}/migration
-%{yast_desktopdir}/*.desktop
+%{yast_clientdir}
+%{yast_libdir}
+%{yast_desktopdir}
+%{yast_metainfodir}
 %{yast_icondir}
-
-%dir %{yast_docdir}
 %license COPYING
-%doc %{yast_docdir}/README.md
-%doc %{yast_docdir}/CONTRIBUTING.md
+%doc %{yast_docdir}
+
+%changelog

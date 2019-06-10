@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Fri May 31 12:33:35 UTC 2019 - Stasiek Michalski <hellcp@mailbox.org>
+
+- Add metainfo (fate#319035)
+- Revamp spec
+- Replace GenericName with Comment
+- 4.2.0
+
+-------------------------------------------------------------------
 Thu May 30 14:08:16 UTC 2019 - Ladislav Slezák <lslezak@suse.cz>
 
 - Fixes for the openSUSE Leap => SLES migration (jsc#SLE-7006)
