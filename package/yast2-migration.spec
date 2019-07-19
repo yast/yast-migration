@@ -17,7 +17,7 @@
 
 
 Name:           yast2-migration
-Version:        4.2.0
+Version:        4.2.1
 Release:        0
 Summary:        YaST2 - Online migration
 Group:          System/YaST
@@ -35,6 +35,7 @@ BuildRequires:  yast2-ruby-bindings
 # needed in build for testing
 BuildRequires:  yast2-installation >= 3.1.137
 BuildRequires:  yast2-update
+BuildRequires:  update-desktop-files
 
 Requires:       yast2 >= 3.1.130
 Requires:       yast2-packager
