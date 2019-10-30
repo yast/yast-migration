@@ -47,6 +47,9 @@ Requires:       yast2-registration >= 3.1.153
 Requires:       yast2-installation >= 3.1.146
 Requires:       yast2-update
 
+# Older snapper does not provide machine-readable output
+Conflicts:      snapper < 0.8.6
+
 Supplements:    yast2-registration
 
 BuildArch: noarch
