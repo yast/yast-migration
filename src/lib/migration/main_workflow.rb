@@ -41,8 +41,8 @@ module Migration
     include Yast::Logger
     include Yast::I18n
 
-    FIND_CONFIG_CMD = "/usr/bin/snapper --no-dbus list-configs | " \
-      "grep \"^root \" >/dev/null".freeze
+    FIND_CONFIG_CMD = "/usr/bin/snapper --no-dbus --csvout list-configs " \
+    "--columns config,subvolume | grep \"^root,\" >/dev/null".freeze
 
     CREATE_SNAPSHOT_CMD = "/usr/bin/snapper create --type=%{snapshot_type} " \
       "--cleanup-algorithm=number --print-number --userdata important=yes " \

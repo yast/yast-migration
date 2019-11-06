@@ -17,7 +17,7 @@
 
 
 Name:           yast2-migration
-Version:        4.2.2
+Version:        4.2.3
 Release:        0
 Summary:        YaST2 - Online migration
 Group:          System/YaST
@@ -46,6 +46,9 @@ Requires:       yast2-registration >= 3.1.153
 # need recent enough installation for working proposal runner
 Requires:       yast2-installation >= 3.1.146
 Requires:       yast2-update
+
+# Older snapper does not provide machine-readable output
+Conflicts:      snapper < 0.8.6
 
 Supplements:    yast2-registration
 
