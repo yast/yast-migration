@@ -24,7 +24,6 @@ require "migration/repository_checker"
 
 describe Migration::RepositoryChecker do
   subject do
-    Y2Packager::Resolvable.new
     products = load_yaml_data("sles12_migration_products.yml").map do |p|
       Y2Packager::Resolvable.new(p)
     end
