@@ -39,7 +39,7 @@ BuildRequires:  update-desktop-files
 
 Requires:       yast2 >= 3.1.130
 # product_update_summary, product_update_warning
-Requires:       yast2-packager >=4.2.33
+Requires:       yast2-packager >= 4.2.33
 Requires:       yast2-pkg-bindings
 Requires:       yast2-ruby-bindings
 # new rollback client
