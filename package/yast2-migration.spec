@@ -30,8 +30,7 @@ BuildRequires:  yast2-buildtools >= 4.2.2
 BuildRequires:  yast2 >= 3.1.130
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:rspec)
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:yast-rake)
-# product_update_summary, product_update_warning
-BuildRequires:  yast2-packager >=4.2.33
+BuildRequires:  yast2-packager
 BuildRequires:  yast2-ruby-bindings
 # needed in build for testing
 BuildRequires:  yast2-installation >= 3.1.137
