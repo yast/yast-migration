@@ -19,6 +19,7 @@
 # ------------------------------------------------------------------------------
 
 require "yast"
+require "y2packager/resolvable"
 
 module Migration
   # Check for possible repository issues in the libzypp products
