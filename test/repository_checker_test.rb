@@ -24,7 +24,11 @@ require "migration/repository_checker"
 
 describe Migration::RepositoryChecker do
   subject do
-    Migration::RepositoryChecker.new(load_yaml_data("sles12_migration_products.yml"))
+    Y2Packager::Resolvable.new
+    products = load_yaml_data("sles12_migration_products.yml").map do |p|
+      Y2Packager::Resolvable.new(p)
+    end
+    Migration::RepositoryChecker.new(products)
   end
 
   describe "#obsolete_product_repos" do

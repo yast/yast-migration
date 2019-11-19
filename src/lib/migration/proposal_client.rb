@@ -15,6 +15,7 @@
 
 require "installation/proposal_client"
 require "migration/repository_checker"
+require "y2packager/resolvable"
 
 module Migration
   # The proposal client for online migration
@@ -45,7 +46,7 @@ module Migration
       # recalculate the disk space usage data
       SpaceCalculation.GetPartitionInfo
 
-      products = Pkg.ResolvableProperties("", :product, "")
+      products = Y2Packager::Resolvable.find(kind: :product)
 
       ret = {
         "preformatted_proposal" => product_summary(products),
@@ -92,7 +93,7 @@ module Migration
     # check the current products for possible issues, add product warnings
     # to the proposal summary
     # @param [Hash] proposal the proposal summary (the value is modified)
-    # @param [Array<Hash>] products list of the current products (from libzypp)
+    # @param [Array<Y2Packager::Resolvable>] products list of the current products
     def add_warnings(proposal, products)
       package_warnings = Packages.product_update_warning(products)
       repo_warnings = check_repositories(products)
@@ -112,7 +113,7 @@ module Migration
     end
 
     # create a product summary for migration proposal
-    # @param [Array<Hash>] products the current libzypp products
+    # @param [Array<Y2Packager::Resolvable>] products the current libzypp products
     # @return [String] product summary text (RichText)
     def product_summary(products)
       summary_text = Packages.product_update_summary(products).map do |item|
@@ -123,7 +124,7 @@ module Migration
     end
 
     # check for obsolete repositories
-    # @param [Array<Hash>] products the current libzypp products
+    # @param [Array<Y2Packager::Resolvable>] products the current libzypp products
     # @return [Hash] warning for the proposal summary, an empty Hash is returned
     #   if everything is OK
     def check_repositories(products)

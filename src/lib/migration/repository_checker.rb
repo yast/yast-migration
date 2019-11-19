@@ -26,7 +26,7 @@ module Migration
     include Yast::Logger
 
     # constructor
-    # @param [Array<Hash>] products list of products from pkg-bindings
+    # @param [Array<Y2Packager::Resolvable>] products list of products
     def initialize(products)
       @products = products
     end
@@ -35,7 +35,7 @@ module Migration
     # (an upgrade is available for them)
     # return [Array<Fixnum>] repositories providing obsolete products
     def obsolete_product_repos
-      old_repos = obsolete_available_products.map { |product| product["source"] }
+      old_repos = obsolete_available_products.map(&:source)
 
       # make sure the system repo or invalid values are filtered out
       # (related to gh#yast/yast-registration#198)
@@ -53,7 +53,7 @@ module Migration
     attr_accessor :products
 
     # get the available obsolete products
-    # @return [Array<Hash>] obsolete products
+    # @return [Array<Y2Packager::Resolvable>] obsolete products
     def obsolete_available_products
       obsolete_products = []
 
@@ -73,9 +73,9 @@ module Migration
 
     # select the products with the specified status
     # @param [Symbol] status required status of the products
-    # @return [Array<Hash>] list of libzypp products
+    # @return [Array<Y2Packager::Resolvable>] list of libzypp products
     def select_products(status)
-      products.select { |product| product["status"] == status }
+      products.select { |product| product.status == status }
     end
 
     # Does a product upgrade another product?
@@ -86,9 +86,9 @@ module Migration
       # use Gem::Version internally for a proper version string comparison
       # TODO: check also "provides" to handle product renames (should not happen
       # in SP migration, but anyway...)
-      old_product["name"] == new_product["name"] &&
-        (Gem::Version.new(old_product["version_version"]) <
-          Gem::Version.new(new_product["version_version"]))
+      old_product.name == new_product.name &&
+        (Gem::Version.new(old_product.version_version) <
+          Gem::Version.new(new_product.version_version))
     end
   end
 end
