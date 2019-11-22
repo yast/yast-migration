@@ -1,5 +1,6 @@
 ---
 - arch: x86_64
+  kind: :product
   category: base
   description: |-
     SUSE Linux Enterprise offers a comprehensive
@@ -42,6 +43,7 @@
   version_version: '12'
 - arch: x86_64
   category: addon
+  kind: :product
   description: |-
     SUSE Linux Enterprise offers a comprehensive
             suite of products built on a single code base.
@@ -83,6 +85,7 @@
   version_version: '12.1'
 - arch: x86_64
   category: addon
+  kind: :product
   description: |-
     SUSE Linux Enterprise offers a comprehensive
             suite of products built on a single code base.

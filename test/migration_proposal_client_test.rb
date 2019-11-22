@@ -47,6 +47,11 @@ describe Migration::ProposalClient do
 
   describe "#make_proposal" do
     let(:msg) { "Product <b>Foo</b> will be installed" }
+    let(:products) do
+      load_yaml_data("sles12_migration_products.yml").map do |p|
+        Y2Packager::Resolvable.new(p)
+      end
+    end
 
     before do
       expect(Yast::Pkg).to receive(:PkgSolve)
@@ -55,13 +60,14 @@ describe Migration::ProposalClient do
       expect(Yast::SpaceCalculation).to receive(:GetPartitionInfo)
       expect(Yast::Packages).to receive(:product_update_summary)
         .and_return([msg])
-      expect(Yast::Pkg).to receive(:ResolvableProperties).with("", :product, "")
-        .and_return(load_yaml_data("sles12_migration_products.yml"))
+      expect(Y2Packager::Resolvable).to receive(:find).with(kind: :product)
+        .and_return(products)
       expect(Yast::Pkg).to receive(:SourceGeneralData).with(0)
         .and_return("name" => "Repo")
     end
 
     it "returns a map with proposal details" do
+      expect(Yast::Packages).to receive(:product_update_warning).and_return({})
       proposal = subject.make_proposal({})
 
       expect(proposal).to include("help", "preformatted_proposal")
@@ -69,9 +75,13 @@ describe Migration::ProposalClient do
     end
 
     it "returns a warning when an obsoleted repository is present" do
+      warning_string = "warning string"
+      expect(Yast::Packages).to receive(:product_update_warning).and_return(
+        "warning_level" => :warning,
+        "warning"       => warning_string
+      )
       proposal = subject.make_proposal({})
-      expect(proposal["warning"]).to include("Repository <b>Repo</b> is obsolete " \
-          "and should be excluded from migration")
+      expect(proposal["warning"]).to include(warning_string)
       expect(proposal["warning_level"]).to eq(:warning)
     end
   end
