@@ -87,6 +87,7 @@ module Migration
       # use Gem::Version internally for a proper version string comparison
       # TODO: check also "provides" to handle product renames (should not happen
       # in SP migration, but anyway...)
+      # TODO: use Pkg.CompareVersions()
       old_product.name == new_product.name &&
         (Gem::Version.new(old_product.version_version) <
           Gem::Version.new(new_product.version_version))
