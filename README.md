@@ -1,6 +1,9 @@
 YaST Migration Module
 =======================
-
+[![Workflow Status](https://github.com/yast/yast-migration/workflows/CI/badge.svg?branch=master)](
+https://github.com/yast/yast-migration/actions?query=branch%3Amaster)
+[![Jenkins Status](https://ci.opensuse.org/buildStatus/icon?job=yast-yast-migration-master)](
+https://ci.opensuse.org/view/Yast/job/yast-yast-migration-master/)
 [![Travis Build](https://travis-ci.org/yast/yast-migration.svg?branch=master)](https://travis-ci.org/yast/yast-migration)
 [![Jenkins Build](http://img.shields.io/jenkins/s/https/ci.opensuse.org/yast-migration-master.svg)](https://ci.opensuse.org/view/Yast/job/yast-migration/)
 [![Coverage Status](https://img.shields.io/coveralls/yast/yast-migration.svg)](https://coveralls.io/r/yast/yast-migration?branch=master)
