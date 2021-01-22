@@ -30,7 +30,8 @@ module Migration
     Yast.import "Pkg"
     Yast.import "PackagesUI"
 
-    # all patch types, see Pkg.Resolvable{Count,Preselect}Patches documentation
+    # all patch types, see Pkg.ResolvableCountPatches and
+    # Pkg.ResolvablePreselectPatches documentation
     KIND_ALL = :all
     KIND_SW_MGMT = :affects_pkg_manager
     KIND_INTERACTIVE = :interactive
