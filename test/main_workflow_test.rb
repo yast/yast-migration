@@ -35,6 +35,7 @@ describe Migration::MainWorkflow do
 
     before do
       mock_client(["migration_repos", [{ "enable_back" => false }]], :next)
+      mock_client(["inst_product_upgrade_license", [{ "enable_back" => false }]], :next)
       mock_client(["migration_proposals", [{ "hide_export" => true }]], :next)
       mock_client("inst_prepareprogress", :next)
       mock_client("inst_kickoff", :next)
