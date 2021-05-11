@@ -103,7 +103,11 @@ module Migration
       "repositories"            => {
         abort:    :abort,
         rollback: "rollback",
-        next:     "proposals"
+        next:     "license"
+      },
+      "license"                 => {
+        abort: "rollback",
+        next:  "proposals"
       },
       "proposals"               => {
         abort: "rollback",
@@ -146,6 +150,7 @@ module Migration
         "perform_migration"       => ->() { perform_migration },
         "proposals"               => ->() { proposals },
         "repositories"            => ->() { repositories },
+        "license"                 => ->() { license },
         "restart_after_migration" => ->() { restart_yast(:restart_after_migration) },
         # note: the steps after the YaST restart use the new code from
         # the updated (migrated) yast2-migration package!!
@@ -196,6 +201,11 @@ module Migration
     def repositories
       prepare_repos
       Yast::WFM.CallFunction("migration_repos", [{ "enable_back" => false }])
+    end
+
+    # display license for the new base product
+    def license
+      Yast::WFM.CallFunction("inst_product_upgrade_license", [{ "enable_back" => false }])
     end
 
     def proposals
