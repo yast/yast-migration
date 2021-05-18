@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue May 18 11:21:17 UTC 2021 - Ladislav Slezák <lslezak@suse.cz>
+
+- Show the new base product license in online migration
+  (bsc#1185808)
+- 4.4.1
+
+-------------------------------------------------------------------
 Tue Apr 20 13:51:55 UTC 2021 - Ladislav Slezák <lslezak@suse.cz>
 
 - 4.4.0 (bsc#1185510)

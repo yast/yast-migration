@@ -17,7 +17,7 @@
 
 
 Name:           yast2-migration
-Version:        4.4.0
+Version:        4.4.1
 Release:        0
 Summary:        YaST2 - Online migration
 Group:          System/YaST
