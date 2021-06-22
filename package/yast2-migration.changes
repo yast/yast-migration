@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Jun 22 11:50:37 UTC 2021 - Ladislav Slezák <lslezak@suse.cz>
+
+- Show the new base product license in online migration
+  (bsc#1185808)
+- 4.1.3
+
+-------------------------------------------------------------------
 Thu May 30 14:08:16 UTC 2019 - Ladislav Slezák <lslezak@suse.cz>
 
 - Fixes for the openSUSE Leap => SLES migration (jsc#SLE-7006)
