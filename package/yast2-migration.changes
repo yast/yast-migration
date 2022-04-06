@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Apr 06 12:21:00 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
+
+- Bump version to 4.5.0 (#bsc1198109)
+
+-------------------------------------------------------------------
 Tue May 18 11:21:17 UTC 2021 - Ladislav Slezák <lslezak@suse.cz>
 
 - Show the new base product license in online migration
