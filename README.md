@@ -1,11 +1,8 @@
 YaST Migration Module
 =======================
-[![Workflow Status](https://github.com/yast/yast-migration/workflows/CI/badge.svg?branch=master)](
+[![CI](https://github.com/yast/yast-migration/workflows/CI/badge.svg?branch=master)](
 https://github.com/yast/yast-migration/actions?query=branch%3Amaster)
-[![Jenkins Status](https://ci.opensuse.org/buildStatus/icon?job=yast-yast-migration-master)](
-https://ci.opensuse.org/view/Yast/job/yast-yast-migration-master/)
-[![Travis Build](https://travis-ci.org/yast/yast-migration.svg?branch=master)](https://travis-ci.org/yast/yast-migration)
-[![Jenkins Build](http://img.shields.io/jenkins/s/https/ci.opensuse.org/yast-migration-master.svg)](https://ci.opensuse.org/view/Yast/job/yast-migration/)
+[![OBS](https://github.com/yast/yast-migration/actions/workflows/submit.yml/badge.svg)](https://github.com/yast/yast-migration/actions/workflows/submit.yml)
 [![Coverage Status](https://img.shields.io/coveralls/yast/yast-migration.svg)](https://coveralls.io/r/yast/yast-migration?branch=master)
 [![Code Climate](https://codeclimate.com/github/yast/yast-migration/badges/gpa.svg)](https://codeclimate.com/github/yast/yast-migration)
 [![Inline docs](http://inch-ci.org/github/yast/yast-migration.svg?branch=master)](http://inch-ci.org/github/yast/yast-migration)
