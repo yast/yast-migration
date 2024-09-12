@@ -1,7 +1,7 @@
 #
 # spec file for package yast2-migration
 #
-# Copyright (c) 2015 SUSE LLC, Nuernberg, Germany.
+# Copyright (c) 2023 SUSE LLC
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -21,21 +21,21 @@ Version:        4.6.0
 Release:        0
 Summary:        YaST2 - Online migration
 Group:          System/YaST
-License:        GPL-2.0
-Url:            https://github.com/yast/yast-migration
+License:        GPL-2.0-only
+URL:            https://github.com/yast/yast-migration
 
 Source0:        %{name}-%{version}.tar.bz2
 
-BuildRequires:  yast2-buildtools >= 4.2.2
 BuildRequires:  yast2 >= 3.1.130
-BuildRequires:  rubygem(%{rb_default_ruby_abi}:rspec)
-BuildRequires:  rubygem(%{rb_default_ruby_abi}:yast-rake)
+BuildRequires:  yast2-buildtools >= 4.2.2
 BuildRequires:  yast2-packager
 BuildRequires:  yast2-ruby-bindings
+BuildRequires:  rubygem(%{rb_default_ruby_abi}:rspec)
+BuildRequires:  rubygem(%{rb_default_ruby_abi}:yast-rake)
 # needed in build for testing
 BuildRequires:  yast2-installation >= 3.1.137
-BuildRequires:  yast2-update
 BuildRequires:  update-desktop-files
+BuildRequires:  yast2-update
 
 Requires:       yast2 >= 3.1.130
 # product_update_summary, product_update_warning
@@ -53,7 +53,7 @@ Conflicts:      snapper < 0.8.6
 
 Supplements:    yast2-registration
 
-BuildArch: noarch
+BuildArch:      noarch
 
 %description
 This package contains the YaST2 component for online migration.
